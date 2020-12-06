@@ -3,6 +3,7 @@
 app/build/*
 app\build\*
 local.properties
+*.properties
 /local.properties
 /.idea/caches
 /.idea/libraries
