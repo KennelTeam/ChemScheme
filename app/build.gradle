@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-android-extensions'
     id 'androidx.navigation.safeargs'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.20'
 }
 
 android {
@@ -65,5 +66,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:0.9.1"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.9.1"
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1'
+    //implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:0.9.1"
 }

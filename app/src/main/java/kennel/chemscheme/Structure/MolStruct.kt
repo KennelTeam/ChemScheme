@@ -1,8 +1,13 @@
 package kennel.chemscheme.structure
 
+import kotlinx.serialization.Serializable
+
 
 import android.content.Context
 import android.util.Log
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.*
 import java.io.*
 
 fun writeToFile(data: String, context: Context) {
@@ -15,7 +20,7 @@ fun writeToFile(data: String, context: Context) {
     }
 }
 
-fun readFromFile(context: Context): String? {
+fun readFromFile(context: Context): String {
     var ret = ""
     try {
         val inputStream: InputStream? = context.openFileInput("config.txt")
@@ -55,23 +60,19 @@ class MolStruct {
     enum class Elements {
         C, H, O, Cl, Br, I, F
     }
-
+    @Serializable
     class Atom(var name: Elements, var links: Array<Int>) {
         override fun toString(): String {
             return name.toString() + ", links: " + links.toString()
         }
     }
 
+    @Serializable
     class Structure() {
         var vertses = emptyArray<Atom>();
         fun add(Name: Elements, Binding: Int, Sight: Int) { // добавляет атом к конструкции
-<<<<<<< HEAD
             vertses += arrayOf(Atom(Name, arrayOf(Binding)));
-            if (Binding >= 0) {
-=======
-            vertses += arrayOf(Atom(Name, arrayOf()));
             if(Binding >= 0) {
->>>>>>> eb1b7a6a2e9bfdb79a76b0a28570a944ccc64969
                 vertses[Binding].links =
                         vertses[Binding].links.PySlice(0, Sight - 1) + arrayOf(vertses.size - 1) +
                                 vertses[Binding].links.PySlice(Sight, vertses[Binding].links.size - 1);
@@ -101,12 +102,12 @@ class MolStruct {
             return answ;
         }
 
-        fun convert(): String {
-            return ""
+        fun write(fname: Context) {
+            writeToFile(Json.encodeToString(this), fname);
         }
 
-        fun write(fname: String) {
-
+        fun read(context: Context) {
+            return Json.decodeFromString(readFromFile(context));
         }
     }
 }
