@@ -1,7 +1,4 @@
-package Structure
-
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
+package kennel.chemscheme.structure
 
 class Atom(name: String, links: Array<Int>) {
     var links: Array<Int> = links;
