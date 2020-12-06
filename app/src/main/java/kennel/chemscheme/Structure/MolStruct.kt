@@ -60,21 +60,27 @@ class MolStruct {
         override fun toString(): String {
             return name.toString() + ", links: " + links.toString()
         }
+
+        override fun equals(other: Any?): Boolean {
+            if(other is Atom){
+                return name == other.name && links.equals(other.links)
+            } else{
+                return false
+            }
+        }
     }
 
     class Structure() {
         var vertses = emptyArray<Atom>();
         fun add(Name: Elements, Binding: Int, Sight: Int) { // добавляет атом к конструкции
-<<<<<<< HEAD
-            vertses += arrayOf(Atom(Name, arrayOf(Binding)));
-            if (Binding >= 0) {
-=======
-            vertses += arrayOf(Atom(Name, arrayOf()));
+
             if(Binding >= 0) {
->>>>>>> eb1b7a6a2e9bfdb79a76b0a28570a944ccc64969
+                vertses += arrayOf(Atom(Name, arrayOf(Binding)));
                 vertses[Binding].links =
                         vertses[Binding].links.PySlice(0, Sight - 1) + arrayOf(vertses.size - 1) +
                                 vertses[Binding].links.PySlice(Sight, vertses[Binding].links.size - 1);
+            } else {
+                vertses += arrayOf(Atom(Name, arrayOf()));
             }
         }
 

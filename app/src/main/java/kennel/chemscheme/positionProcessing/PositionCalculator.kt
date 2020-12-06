@@ -39,8 +39,9 @@ class PositionCalculator {
         }
 
         fun rotateVector(right : Vector, left: Vector, near: Boolean) : Vector{
-            val halfSum = -(right + left) / 2.0
-            val diff = (left - right) / 2.0
+            val r = -right
+            val halfSum = -(r + left) / 2.0
+            val diff = (left - r) / 2.0
             var cross = Vector.constants.zero
             if(near){
                 cross = diff * halfSum
@@ -54,7 +55,7 @@ class PositionCalculator {
         fun drawSequence(graph: Structure, sequence : MutableList<Atom3D>, right : Vector, left : Vector) : MutableList<Atom3D>{
             var result = mutableListOf<Atom3D>()
             var current = sequence[0].position
-            for (index : Int in 1..sequence.size){
+            for (index : Int in 1..sequence.size-1){
                 if(index % 2 == 0){
                     current += right
                 } else {
@@ -82,21 +83,22 @@ class PositionCalculator {
                     if(inSequence){
                         continue
                     }
-
+                    var nextDirection : Vector = rotateVector(right, left, alreadyFound)
                     if (alreadyFound){
                         sequence[index].farIndex = atomInd
                     } else{
                         sequence[index].nearIndex = atomInd
                         alreadyFound = true
                     }
-                    var nextDirection : Vector = rotateVector(right, left, alreadyFound)
+
 
                     var nextSequence = mutableListOf<Atom>(sequence[index].atom)
                     nextSequence.addAll(getLongestCarbon(graph, graph.vertses[atomInd], neighbours))
 
                     var nextSequence3d = mutableListOf<Atom3D>()
-                    for (atom : Atom in nextSequence){
-                        nextSequence3d.add(Atom3D(atom))
+                    nextSequence3d.add(sequence[index])
+                    for (i : Int in 1..nextSequence.size-1){
+                        nextSequence3d.add(Atom3D(nextSequence[i]))
                     }
 
                     result.addAll(drawSequence(graph, nextSequence3d, right, nextDirection))
@@ -107,9 +109,6 @@ class PositionCalculator {
 
             return result
         }
-
-        fun <T> mutableListWithCapacity(capacity: Int): MutableList<T> =
-            ArrayList(capacity)
 
         fun calculatePositions(structure : Structure) : Structure3D {
             val isolated = findAllIsolated(structure)
@@ -129,15 +128,19 @@ class PositionCalculator {
             for (atom : Atom in theLongestCarbonSequence){
                 sequence3d.add(Atom3D(atom))
             }
+            var atoms3d = mutableListOf<Atom3D>(sequence3d[0])
 
-            var atoms3d = drawSequence(structure, sequence3d, Vector(sqrt(3.0), 1.0, 0.0), Vector(
+            atoms3d.addAll(drawSequence(structure, sequence3d, Vector(sqrt(3.0), 1.0, 0.0), Vector(
                 sqrt(3.0), -1.0, 0.0)
-            )
+            ))
 
             var result : Structure3D = Structure3D()
-            result.vertices = mutableListWithCapacity<Atom3D>(atoms3d.size)
+            result.vertices = mutableListOf<Atom3D>()
+            for (atom in atoms3d){
+                result.vertices.add(atom)
+            }
             for (atom : Atom3D in atoms3d){
-                result.vertices.add(structure.vertses.indexOf(atom.atom), atom)
+                result.vertices[structure.vertses.indexOf(atom.atom)] = atom
             }
 
             return result
