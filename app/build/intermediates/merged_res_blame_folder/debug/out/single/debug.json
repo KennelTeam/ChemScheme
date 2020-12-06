@@ -12,6 +12,10 @@
         "source": "C:\\Fast files\\ChemScheme\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher_round.png"
     },
     {
+        "merged": "C:\\Fast files\\ChemScheme\\app\\build\\intermediates\\res\\merged\\debug\\layout_structural_formula_fragment.xml.flat",
+        "source": "C:\\Fast files\\ChemScheme\\app\\src\\main\\res\\layout\\structural_formula_fragment.xml"
+    },
+    {
         "merged": "C:\\Fast files\\ChemScheme\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi_ic_launcher_round.png.flat",
         "source": "C:\\Fast files\\ChemScheme\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher_round.png"
     },
@@ -38,6 +42,10 @@
     {
         "merged": "C:\\Fast files\\ChemScheme\\app\\build\\intermediates\\res\\merged\\debug\\layout_mol3d_fragment.xml.flat",
         "source": "C:\\Fast files\\ChemScheme\\app\\src\\main\\res\\layout\\mol3d_fragment.xml"
+    },
+    {
+        "merged": "C:\\Fast files\\ChemScheme\\app\\build\\intermediates\\res\\merged\\debug\\navigation_navigation.xml.flat",
+        "source": "C:\\Fast files\\ChemScheme\\app\\src\\main\\res\\navigation\\navigation.xml"
     },
     {
         "merged": "C:\\Fast files\\ChemScheme\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher.xml.flat",
