@@ -14,8 +14,6 @@ kennel/chemscheme/DataBinderMapperImpl.java
  kennel.chemscheme.DataBinderMapperImpl
  kennel.chemscheme.DataBinderMapperImpl$InnerBrLookup
  kennel.chemscheme.DataBinderMapperImpl$InnerLayoutIdLookup
-kennel/chemscheme/game/AndroidLauncher.java
- com.mygdx.game.AndroidLauncher
 androidx/databinding/library/baseAdapters/BR.java
  androidx.databinding.library.baseAdapters.BR
 androidx/databinding/DataBindingComponent.java

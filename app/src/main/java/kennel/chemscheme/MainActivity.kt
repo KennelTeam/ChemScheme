@@ -2,6 +2,7 @@ package kennel.chemscheme
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 
 import kennel.chemscheme.positionProcessing.*
 import kennel.chemscheme.structure.MolStruct
@@ -10,8 +11,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        test3d()
-
+        try {
+            test3d()
+            Log.i("test3d", "test passed")
+        } catch(e: Exception) {
+            Log.i("test3d", "test failed")
+        }
     }
 
     fun test3d(){
