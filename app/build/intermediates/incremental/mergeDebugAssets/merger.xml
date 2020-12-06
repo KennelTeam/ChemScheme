@@ -1,6 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< HEAD
-<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Fast files\ChemScheme\app\src\main\assets"/><source path="C:\Fast files\ChemScheme\app\build\intermediates\shader_assets\debug\out"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Fast files\ChemScheme\app\src\debug\assets"/></dataSet></merger>
-=======
 <merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Users\alexe\Documents\Hackatons\ChemScheme\app\assets"><file name="badlogic.jpg" path="C:\Users\alexe\Documents\Hackatons\ChemScheme\app\assets\badlogic.jpg"/></source><source path="C:\Users\alexe\Documents\Hackatons\ChemScheme\app\build\intermediates\shader_assets\debug\out"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Users\alexe\Documents\Hackatons\ChemScheme\app\src\debug\assets"/></dataSet></merger>
->>>>>>> f5218b2a54083c2845c64e8e6560bd61b7ca0c20

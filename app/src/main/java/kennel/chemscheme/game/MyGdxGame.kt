@@ -60,7 +60,7 @@ class MyGdxGame : ApplicationAdapter() {
 
     fun createFromArray(struct: Structure3D) {
         val verts = struct.vertices
-        verts.forEach {
+       // verts.forEach {
             val model = builder.createSphere(1f, 1f, 1f, 50, 50,
                 Material(ColorAttribute.createDiffuse(Color.GREEN)),
                 (Usage.Position or Usage.Normal).toLong())
@@ -68,7 +68,7 @@ class MyGdxGame : ApplicationAdapter() {
             val instance = ModelInstance(model)
             atomsModels.add(model)
             atomsInstances.add(instance)
-        }
+        //}
     }
 
     override fun render() {
