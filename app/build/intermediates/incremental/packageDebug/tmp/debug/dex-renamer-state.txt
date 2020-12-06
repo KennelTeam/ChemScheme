@@ -1,17 +1,10 @@
-<<<<<<< HEAD
-#Sun Dec 06 16:26:02 MSK 2020
-base.0=C\:\\Fast files\\ChemScheme\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+#Sun Dec 06 17:52:08 EET 2020
+path.2=classes2.dex
 path.1=classes.dex
-renamed.1=classes2.dex
 path.0=classes.dex
-renamed.0=classes.dex
-base.1=C\:\\Fast files\\ChemScheme\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\classes.dex
-=======
-#Sun Dec 06 16:04:54 MSK 2020
-base.0=D\:\\Dropbox\\Dropbox\\Nikita\\Programs_1\\Android\\ChemScheme\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
-path.1=classes.dex
+renamed.2=classes3.dex
 renamed.1=classes2.dex
-path.0=classes.dex
 renamed.0=classes.dex
-base.1=D\:\\Dropbox\\Dropbox\\Nikita\\Programs_1\\Android\\ChemScheme\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\classes.dex
->>>>>>> eb1b7a6a2e9bfdb79a76b0a28570a944ccc64969
+base.2=C\:\\Users\\alexe\\Documents\\Hackatons\\ChemScheme\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
+base.1=C\:\\Users\\alexe\\Documents\\Hackatons\\ChemScheme\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\classes.dex
+base.0=C\:\\Users\\alexe\\Documents\\Hackatons\\ChemScheme\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
