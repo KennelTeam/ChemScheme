@@ -73,7 +73,6 @@ class MolStruct {
     class Structure() {
         var vertses = emptyArray<Atom>();
         fun add(Name: Elements, Binding: Int, Sight: Int) { // добавляет атом к конструкции
-
             if(Binding >= 0) {
                 vertses += arrayOf(Atom(Name, arrayOf(Binding)));
                 vertses[Binding].links =
