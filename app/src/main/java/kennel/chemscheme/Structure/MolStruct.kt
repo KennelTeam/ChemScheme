@@ -79,13 +79,8 @@ class MolStruct {
     class Structure() {
         var vertses = emptyArray<Atom>();
         fun add(Name: Elements, Binding: Int, Sight: Int) { // добавляет атом к конструкции
-<<<<<<< HEAD
             vertses += arrayOf(Atom(Name, arrayOf(Binding)));
             if(Binding >= 0) {
-=======
-            if(Binding >= 0) {
-                vertses += arrayOf(Atom(Name, arrayOf(Binding)));
->>>>>>> f5218b2a54083c2845c64e8e6560bd61b7ca0c20
                 vertses[Binding].links =
                         vertses[Binding].links.PySlice(0, Sight - 1) + arrayOf(vertses.size - 1) +
                                 vertses[Binding].links.PySlice(Sight, vertses[Binding].links.size - 1);

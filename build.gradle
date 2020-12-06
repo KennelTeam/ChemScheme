@@ -36,13 +36,9 @@ allprojects {
         mavenLocal()
         mavenCentral()
         jcenter()
-<<<<<<< HEAD
-        mavenCentral()
-=======
         google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
->>>>>>> f5218b2a54083c2845c64e8e6560bd61b7ca0c20
         maven { url 'https://jitpack.io' }
     }
 }
