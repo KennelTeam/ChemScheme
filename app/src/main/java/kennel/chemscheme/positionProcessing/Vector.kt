@@ -2,12 +2,25 @@ package kennel.chemscheme.positionProcessing
 
 import kotlin.math.sqrt
 
+//Реализация трехмерного вектора
 class Vector (var x : Double, var y : Double, var z : Double) {
 
+    //В этом объекте предполагается хранить все полезные векторные константы.
     object constants{
+        //Нулевой вектор
         val zero = Vector(0.0, 0.0, 0.0)
     }
+    //Длина вектора
+    fun magnitude() : Double {
+        return sqrt(x*x + y*y + z*z)
+    }
 
+    //Вектор единичной длины, имеющий то же направление, что и this
+    fun unit() : Vector {
+        return (this / this.magnitude());
+    }
+
+    //Дальше идет очевидное описание операторов
     operator fun minus(other : Vector) : Vector {
         return Vector(x - other.x, y - other.y, z - other.z)
     }
@@ -20,20 +33,12 @@ class Vector (var x : Double, var y : Double, var z : Double) {
         return Vector(-x, -y, -z)
     }
 
-    fun magnitude() : Double {
-        return sqrt(x*x + y*y + z*z)
-    }
-
     operator fun div(k : Double) : Vector {
         return Vector(x / k, y / k, z / k)
     }
 
     operator fun times(k : Double) : Vector {
         return Vector(x * k, y * k, z * k)
-    }
-
-    fun unit() : Vector {
-        return (this / this.magnitude());
     }
 
     operator fun times(b : Vector) : Vector{
