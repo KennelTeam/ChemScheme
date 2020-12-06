@@ -56,6 +56,7 @@ fun Array<Int>.PyRemove(index: Int): Array<Int> {
 }
 
 class MolStruct {
+    azaza
 
     enum class Elements {
         C, H, O, Cl, Br, I, F

@@ -22,7 +22,7 @@ class MyGdxGame : ApplicationAdapter() {
     private lateinit var camCtrl: CameraInputController
     private val atomsModels = mutableListOf<Model>()
     private val atomsInstances = mutableListOf<ModelInstance>()
-    private val builder = ModelBuilder()
+    private lateinit var builder: ModelBuilder
 
     override fun create() {
         env = Environment()
@@ -44,6 +44,7 @@ class MyGdxGame : ApplicationAdapter() {
 
         camCtrl = CameraInputController(cam)
         Gdx.input.inputProcessor = camCtrl
+        builder = ModelBuilder()
 
 
 //        val b = MeshBuilder()
@@ -55,19 +56,20 @@ class MyGdxGame : ApplicationAdapter() {
 //        builder.begin()
 //        builder.part("mesh", mesh, GL20.GL_TRIANGLES, Material(ColorAttribute.createDiffuse(Color.GREEN)))
 //        model = builder.end()
+        createFromArray()
 
     }
 
-    fun createFromArray(struct: Structure3D) {
-        val verts = struct.vertices
+    fun createFromArray() {
+      //  val verts = struct.vertices
        // verts.forEach {
-            val model = builder.createSphere(1f, 1f, 1f, 50, 50,
-                Material(ColorAttribute.createDiffuse(Color.GREEN)),
-                (Usage.Position or Usage.Normal).toLong())
+        val model = builder.createSphere(1f, 1f, 1f, 50, 50,
+            Material(ColorAttribute.createDiffuse(Color.GREEN)),
+            (Usage.Position or Usage.Normal).toLong())
 
-            val instance = ModelInstance(model)
-            atomsModels.add(model)
-            atomsInstances.add(instance)
+        val instance = ModelInstance(model)
+        atomsModels.add(model)
+        atomsInstances.add(instance)
         //}
     }
 
