@@ -2,14 +2,10 @@ package kennel.chemscheme
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication
-import kennel.chemscheme.mol3d.MolGdxFrag
 
 import kennel.chemscheme.positionProcessing.*
 import kennel.chemscheme.structure.MolStruct
-import java.io.File
 
 class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
