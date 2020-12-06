@@ -7,7 +7,7 @@ import kotlin.math.sqrt
 class PositionCalculator {
     companion object {
         //Ищет все одноричные углероды. Используется при поиске самой длинной углеродной цепочки
-        fun findAllIsolated(graph : Structure) : MutableList<Atom>{
+        private fun findAllIsolated(graph : Structure) : MutableList<Atom>{
             var result = mutableListOf<Atom>()
             //Идем по всем углеродам
             for (carbon : Int in graph.getByName(Elements.C)){
@@ -32,7 +32,7 @@ class PositionCalculator {
         //graph - молекула, в которой ищем
         //vertex - атом, с которого должна начинаться цепочка
         //alreadyVisited - множество вершин, в которых мы уже побывали (их не надо проверять)
-        fun getLongestCarbon(graph : Structure, vertex : Atom, alreadyVisited : MutableSet<Atom>) : MutableList<Atom>{
+        private fun getLongestCarbon(graph : Structure, vertex : Atom, alreadyVisited : MutableSet<Atom>) : MutableList<Atom>{
             var result = mutableListOf<Atom>()
             alreadyVisited.add(vertex)
             result.add(vertex)
@@ -65,7 +65,7 @@ class PositionCalculator {
         near - это переменая, которая переключается между двумя вариантами (двумя вершинами),
         которые можно получить
         */
-        fun rotateVector(right : Vector, left: Vector, near: Boolean) : Vector{
+        private fun rotateVector(right : Vector, left: Vector, near: Boolean) : Vector{
             //Тут реализуется просто математическая формула.. немного стереометрии и все готово
             val r = -right
             val halfSum = -(r + left) / 2.0
@@ -90,7 +90,7 @@ class PositionCalculator {
         При том эти вектора - это направления атомов (типа они как раз задают зигзаг,
         который получается из этой формулы)
          */
-        fun drawSequence(graph: Structure, sequence : MutableList<Atom3D>, right : Vector, left : Vector) : MutableList<Atom3D>{
+        private fun drawSequence(graph: Structure, sequence : MutableList<Atom3D>, right : Vector, left : Vector) : MutableList<Atom3D>{
             //Итоговый массив с Atom3D
             var result = mutableListOf<Atom3D>()
             //Позиция i-го атома (считаеся, что 0-й атом уже поставлен на нужное место и остальные
@@ -151,7 +151,7 @@ class PositionCalculator {
                     //Построим ее в виде 3d цепочки (вместо Atom поставим Atom3D)
                     var nextSequence3d = mutableListOf<Atom3D>()
                     nextSequence3d.add(sequence[index])
-                    for (i : Int in 1..nextSequence.size-1){
+                    for (i : Int in 1 until nextSequence.size){
                         nextSequence3d.add(Atom3D(nextSequence[i]))
                     }
                     //И вызовем рекурсивную функцию
