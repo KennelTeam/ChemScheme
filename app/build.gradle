@@ -10,6 +10,14 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    sourceSets {
+        main {
+            renderscript.srcDirs = ['src']
+            assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
     defaultConfig {
         applicationId "kennel.chemscheme"
         minSdkVersion 21
