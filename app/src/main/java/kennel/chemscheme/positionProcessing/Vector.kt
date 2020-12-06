@@ -37,7 +37,7 @@ class Vector (var x : Double, var y : Double, var z : Double) {
     }
 
     operator fun times(b : Vector) : Vector{
-        return Vector(y*b.z - z*b.y, z*b.x - x*b.z, x*b.y - y*b.z)
+        return Vector(y*b.z - z*b.y, z*b.x - x*b.z, x*b.y - y*b.x)
     }
 
     override fun toString() : String{
