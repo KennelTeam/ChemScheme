@@ -3,7 +3,6 @@
 app/build/*
 local.properties
 *.properties
-/local.properties
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -15,4 +14,3 @@ local.properties
 /captures
 .externalNativeBuild
 .cxx
-local.properties
