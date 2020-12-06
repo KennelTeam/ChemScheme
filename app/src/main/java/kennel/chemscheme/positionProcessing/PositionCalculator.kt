@@ -5,7 +5,7 @@ import kotlin.math.sqrt
 
 class PositionCalculator {
     companion object {
-        fun findAllIsolated(graph : Structure) : MutableList<Atom>{
+        private fun findAllIsolated(graph : Structure) : MutableList<Atom>{
             var result = mutableListOf<Atom>()
             for (carbon : Int in graph.getByName(Elements.C)){
                 var carbonsFound = 0
@@ -22,7 +22,7 @@ class PositionCalculator {
             return result
         }
 
-        fun getLongestCarbon(graph : Structure, vertex : Atom, alreadyVisited : MutableList<Atom>) : MutableList<Atom>{
+        private fun getLongestCarbon(graph : Structure, vertex : Atom, alreadyVisited : MutableList<Atom>) : MutableList<Atom>{
             var result = mutableListOf<Atom>()
             alreadyVisited.add(vertex)
             result.add(vertex)
@@ -38,7 +38,7 @@ class PositionCalculator {
             return result
         }
 
-        fun rotateVector(right : Vector, left: Vector, near: Boolean) : Vector{
+        private fun rotateVector(right : Vector, left: Vector, near: Boolean) : Vector{
             val r = -right
             val halfSum = -(r + left) / 2.0
             val diff = (left - r) / 2.0
@@ -52,7 +52,7 @@ class PositionCalculator {
             return halfSum + (cross.unit() * diff.magnitude())
         }
 
-        fun drawSequence(graph: Structure, sequence : MutableList<Atom3D>, right : Vector, left : Vector) : MutableList<Atom3D>{
+        private fun drawSequence(graph: Structure, sequence : MutableList<Atom3D>, right : Vector, left : Vector) : MutableList<Atom3D>{
             var result = mutableListOf<Atom3D>()
             var current = sequence[0].position
             for (index : Int in 1..sequence.size-1){
@@ -97,7 +97,7 @@ class PositionCalculator {
 
                     var nextSequence3d = mutableListOf<Atom3D>()
                     nextSequence3d.add(sequence[index])
-                    for (i : Int in 1..nextSequence.size-1){
+                    for (i : Int in 1 until nextSequence.size){
                         nextSequence3d.add(Atom3D(nextSequence[i]))
                     }
 

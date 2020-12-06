@@ -10,6 +10,23 @@
             "outputFile": "C:\\Users\\alexe\\Documents\\Hackatons\\ChemScheme\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-bs\\values-bs.xml",
             "map": [
                 {
+                    "source": "C:\\Users\\alexe\\.gradle\\caches\\transforms-2\\files-2.1\\fe854159d53a897793cc932f53b826c5\\navigation-ui-2.3.2\\res\\values-bs\\values-bs.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,158",
+                        "endColumns": "102,124",
+                        "endOffsets": "153,278"
+                    },
+                    "to": {
+                        "startLines": "29,30",
+                        "startColumns": "4,4",
+                        "startOffsets": "2830,2933",
+                        "endColumns": "102,124",
+                        "endOffsets": "2928,3053"
+                    }
+                },
+                {
                     "source": "C:\\Users\\alexe\\.gradle\\caches\\transforms-2\\files-2.1\\e536cae62ec184cd733eeb90eef0feed\\appcompat-1.2.0\\res\\values-bs\\values-bs.xml",
 >>>>>>> f5218b2a54083c2845c64e8e6560bd61b7ca0c20
                     "from": {
@@ -63,23 +80,6 @@
                         "startOffsets": "3145",
                         "endColumns": "100",
                         "endOffsets": "3241"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\alexe\\.gradle\\caches\\transforms-2\\files-2.1\\844a9f3ef8776f4e6918b43da7ce9f17\\navigation-ui-2.3.1\\res\\values-bs\\values-bs.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,158",
-                        "endColumns": "102,124",
-                        "endOffsets": "153,278"
-                    },
-                    "to": {
-                        "startLines": "29,30",
-                        "startColumns": "4,4",
-                        "startOffsets": "2830,2933",
-                        "endColumns": "102,124",
-                        "endOffsets": "2928,3053"
                     }
                 }
             ]

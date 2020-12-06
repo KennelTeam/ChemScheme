@@ -8,6 +8,6 @@ class Atom3D (var atom: Atom){
     var farIndex : Int = -1
 
     override fun toString() : String{
-        return "position: " + position.toString() + "\tatom: " + atom.toString() + "\t" + nearIndex + "\t" + farIndex
+        return "position: $position\tatom: $atom\t$nearIndex\t$farIndex"
     }
 }

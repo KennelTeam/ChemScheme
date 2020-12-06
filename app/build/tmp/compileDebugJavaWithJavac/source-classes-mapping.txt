@@ -18,3 +18,7 @@ androidx/databinding/library/baseAdapters/BR.java
  androidx.databinding.library.baseAdapters.BR
 androidx/databinding/DataBindingComponent.java
  androidx.databinding.DataBindingComponent
+kennel/chemscheme/databinding/Mol3dFragmentBindingImpl.java
+ kennel.chemscheme.databinding.Mol3dFragmentBindingImpl
+kennel/chemscheme/databinding/Mol3dFragmentBinding.java
+ kennel.chemscheme.databinding.Mol3dFragmentBinding

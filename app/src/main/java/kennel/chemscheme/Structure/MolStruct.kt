@@ -63,7 +63,7 @@ class MolStruct {
     @Serializable
     class Atom(var name: Elements, var links: Array<Int>) {
         override fun toString(): String {
-            return name.toString() + ", links: " + links.toString()
+            return "$name, links: $links"
         }
 
         override fun equals(other: Any?): Boolean {

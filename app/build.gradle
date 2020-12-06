@@ -13,7 +13,6 @@ android {
 
     sourceSets {
         main {
-            renderscript.srcDirs = ['src']
             assets.srcDirs = ['assets']
             jniLibs.srcDirs = ['libs']
         }
