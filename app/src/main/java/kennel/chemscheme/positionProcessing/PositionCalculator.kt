@@ -1,21 +1,21 @@
 package kennel.chemscheme.positionProcessing
 
-import kennel.chemscheme.structure.*
+import kennel.chemscheme.structure.MolStruct.*
 import kotlin.math.sqrt
 
 class PositionCalculator {
     companion object {
         fun findAllIsolated(graph : Structure) : MutableList<Atom>{
             var result = mutableListOf<Atom>()
-            for (carbon : Atom in graph.getByName("C")){
+            for (carbon : Int in graph.getByName(Elements.C)){
                 var carbonsFound = 0
-                for (atom : Int in carbon.links){
-                    if(graph.vertses[atom].name == "C"){
+                for (atom : Int in graph.vertses[carbon].links){
+                    if(graph.vertses[atom].name == Elements.C){
                         carbonsFound++
                     }
                 }
                 if(carbonsFound < 2){
-                    result.add(carbon)
+                    result.add(graph.vertses[carbon])
                 }
             }
 
@@ -116,7 +116,7 @@ class PositionCalculator {
             var theLongestCarbonSequence = mutableListOf<Atom>()
             for (v : Atom in isolated){
                 for (index : Int in v.links){
-                    if(structure.vertses[index].name != "C"){
+                    if(structure.vertses[index].name != Elements.C){
                         val longSequence = getLongestCarbon(structure, structure.vertses[index], mutableListOf<Atom>())
                         if(longSequence.size > theLongestCarbonSequence.size){
                             theLongestCarbonSequence = longSequence

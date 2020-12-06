@@ -2,10 +2,7 @@ package kennel.chemscheme.positionProcessing
 
 import kotlin.math.sqrt
 
-class Vector (x : Double, y : Double, z : Double) {
-    var x : Double = 0.0
-    var y : Double = 0.0
-    var z : Double = 0.0
+class Vector (var x : Double, var y : Double, var z : Double) {
 
     object constants{
         val zero = Vector(0.0, 0.0, 0.0)

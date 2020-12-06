@@ -1,6 +1,6 @@
 package kennel.chemscheme.positionProcessing
 
-import kennel.chemscheme.structure.Atom
+import kennel.chemscheme.structure.MolStruct.Atom
 
 class Atom3D (var atom: Atom){
     var position : Vector = Vector(0.0, 0.0, 0.0)
