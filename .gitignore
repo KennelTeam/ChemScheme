@@ -1,5 +1,7 @@
 *.iml
 .gradle
+app/build/*
+app\build\*
 local.properties
 /local.properties
 /.idea/caches

@@ -17,9 +17,9 @@ class MainActivity : AppCompatActivity() {
     fun test3d(){
         var struct : MolStruct.Structure = MolStruct.Structure()
         struct.add(MolStruct.Elements.C, -1, 0)
+        struct.add(MolStruct.Elements.Br, 0, 0)
         struct.add(MolStruct.Elements.H, 0, 1)
         struct.add(MolStruct.Elements.Cl, 0, 2)
-        struct.add(MolStruct.Elements.Br, 0, 0)
         struct.add(MolStruct.Elements.F, 0, 3)
 
         var struct3d = PositionCalculator.calculatePositions(struct)
