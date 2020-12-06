@@ -62,7 +62,7 @@ class MolStruct {
     class Structure() {
         var vertses = emptyArray<Atom>();
         fun add(Name: Elements, Binding: Int, Sight: Int) { // добавляет атом к конструкции
-            vertses += arrayOf(Atom(Name, arrayOf()));
+            vertses += arrayOf(Atom(Name, arrayOf(Binding)));
             if (Binding >= 0) {
                 vertses[Binding].links =
                         vertses[Binding].links.PySlice(0, Sight - 1) + arrayOf(vertses.size - 1) +
@@ -75,6 +75,9 @@ class MolStruct {
                 for (j: Int in vertses[ind].links.indices) {
                     if (vertses[ind].links[j] == index) {
                         vertses[ind].links = vertses[ind].links.PyRemove(j);
+                    }
+                    if (vertses[ind].links[j] > index) {
+                        vertses[ind].links[j] -= 1;
                     }
                 }
             }
