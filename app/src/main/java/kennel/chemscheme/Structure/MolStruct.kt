@@ -56,6 +56,7 @@ fun Array<Int>.PyRemove(index: Int): Array<Int> {
 }
 
 class MolStruct {
+    //Lesh PES
 
     enum class Elements {
         C, H, O, Cl, Br, I, F
@@ -121,3 +122,4 @@ class MolStruct {
         }
     }
 }
+// Lesha PES
