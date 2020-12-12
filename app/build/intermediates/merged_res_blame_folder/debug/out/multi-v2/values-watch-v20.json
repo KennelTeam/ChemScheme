@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\alexe\\Documents\\Hackatons\\ChemScheme\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-watch-v20\\values-watch-v20.xml",
+            "outputFile": "D:\\Dropbox\\Dropbox\\Nikita\\Programs_1\\Android\\ChemScheme\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-watch-v20\\values-watch-v20.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\alexe\\.gradle\\caches\\transforms-2\\files-2.1\\e536cae62ec184cd733eeb90eef0feed\\appcompat-1.2.0\\res\\values-watch-v20\\values-watch-v20.xml",
+                    "source": "C:\\Users\\Andru\\.gradle\\caches\\transforms-2\\files-2.1\\e536cae62ec184cd733eeb90eef0feed\\appcompat-1.2.0\\res\\values-watch-v20\\values-watch-v20.xml",
                     "from": {
                         "startLines": "2,5,8",
                         "startColumns": "4,4,4",

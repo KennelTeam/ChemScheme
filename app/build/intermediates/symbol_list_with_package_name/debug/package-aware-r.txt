@@ -939,6 +939,11 @@ bool abc_action_bar_embed_tabs
 bool abc_allow_stacked_button_bar
 bool abc_config_actionMenuItemAllCaps
 bool mtrl_btn_textappearance_all_caps
+color Br
+color C
+color Cl
+color H
+color O
 color abc_background_cache_hint_selector_material_dark
 color abc_background_cache_hint_selector_material_light
 color abc_btn_colored_borderless_text_material
@@ -1593,6 +1598,9 @@ drawable btn_radio_off_mtrl
 drawable btn_radio_off_to_on_mtrl_animation
 drawable btn_radio_on_mtrl
 drawable btn_radio_on_to_off_mtrl_animation
+drawable connection_far
+drawable connection_near
+drawable connection_simple
 drawable design_bottom_navigation_item_background
 drawable design_fab_background
 drawable design_ic_visibility
@@ -1716,6 +1724,7 @@ id animateToEnd
 id animateToStart
 id asConfigured
 id async
+id atomName
 id auto
 id autoComplete
 id autoCompleteToEnd
@@ -1727,6 +1736,7 @@ id beginning
 id blocking
 id bottom
 id bounce
+id buttonAdd
 id buttonPanel
 id cache_measures
 id cancel_action
@@ -1749,6 +1759,7 @@ id clip_horizontal
 id clip_vertical
 id collapseActionView
 id confirm_button
+id connection
 id container
 id content
 id contentPanel
@@ -1795,6 +1806,7 @@ id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
 id fade
+id farnear_fragment
 id fill
 id fill_horizontal
 id fill_vertical
@@ -1897,6 +1909,7 @@ id parallax
 id parent
 id parentPanel
 id parentRelative
+id parent_layout
 id parent_matrix
 id password_toggle
 id path
@@ -2092,6 +2105,7 @@ layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_main
+layout atom_farnear
 layout custom_dialog
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog
@@ -2108,6 +2122,7 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
+layout farnear_fragment
 layout mol3d_fragment
 layout mtrl_alert_dialog
 layout mtrl_alert_dialog_actions
@@ -2171,6 +2186,7 @@ layout text_view_with_line_height_from_layout
 layout text_view_with_line_height_from_style
 layout text_view_with_theme_line_height
 layout text_view_without_line_height
+layout toadd_near_far
 mipmap ic_launcher
 mipmap ic_launcher_round
 navigation navigation

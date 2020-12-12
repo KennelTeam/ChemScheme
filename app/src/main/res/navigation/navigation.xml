@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/mol3dFragment">
+    app:startDestination="@id/farnear_fragment">
 
     <fragment
         android:id="@+id/structuralFormulaFragment"
@@ -14,5 +14,10 @@
         android:id="@+id/mol3dFragment"
         android:name="kennel.chemscheme.mol3d.Mol3dFragment"
         android:label="Mol3dFragment" />
+
+    <fragment
+        android:id="@+id/farnear_fragment"
+        android:name="kennel.chemscheme.positionProcessing.NearFarFragmentController"
+        android:label="FarNearFragment" />
 
 </navigation>
