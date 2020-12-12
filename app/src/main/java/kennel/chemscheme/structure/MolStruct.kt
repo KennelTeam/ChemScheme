@@ -56,9 +56,6 @@ fun Array<Int>.PyRemove(index: Int): Array<Int> {
 }
 
 class MolStruct {
-    //Lesh PES
-    azaza
-
     enum class Elements {
         C, H, O, Cl, Br, I, F
     }
@@ -81,8 +78,8 @@ class MolStruct {
     class Structure() {
         var vertses = emptyArray<Atom>();
         fun add(Name: Elements, Binding: Int, Sight: Int) { // добавляет атом к конструкции
-            vertses += arrayOf(Atom(Name, arrayOf(Binding)));
             if(Binding >= 0) {
+                vertses += arrayOf(Atom(Name, arrayOf(Binding)));
                 vertses[Binding].links =
                         vertses[Binding].links.PySlice(0, Sight - 1) + arrayOf(vertses.size - 1) +
                                 vertses[Binding].links.PySlice(Sight, vertses[Binding].links.size - 1);
