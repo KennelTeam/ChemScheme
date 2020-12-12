@@ -1806,7 +1806,7 @@ id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
 id fade
-id farnear_fragment
+id farnear_layout
 id fill
 id fill_horizontal
 id fill_vertical
@@ -1909,7 +1909,6 @@ id parallax
 id parent
 id parentPanel
 id parentRelative
-id parent_layout
 id parent_matrix
 id password_toggle
 id path
