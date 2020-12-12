@@ -48,7 +48,7 @@ class MyGdxGame : ApplicationAdapter() {
         cam.update()
 
         camCtrl = CameraInputController(cam)
-        Gdx.input.inputProcessor = camCtrl
+       // Gdx.input.inputProcessor = camCtrl
     }
 
     private fun addLights() {
