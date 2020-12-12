@@ -26,7 +26,7 @@ import kennel.chemscheme.structural_formula.StructuralFormulaFragment
 
 class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
 
-//    private lateinit var appBarConfiguration: AppBarConfiguration
+    private val startFragment = Mol3dFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
 //        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener { item: MenuItem -> onNavigationItemSelected(item) }
+        changeFragment(startFragment)
 //        val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -53,22 +54,26 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
 
     private fun onNavigationItemSelected(item: MenuItem): Boolean {
         var fragment: Fragment? = null
-        var classFragment: Class<Fragment>? = null
         when (item.itemId) {
             R.id.nav_2d -> fragment = StructuralFormulaFragment()
             R.id.nav_3d -> fragment = Mol3dFragment()
             R.id.nav_exit -> finish()
         }
         if (fragment != null) {
-            val fragManager: FragmentManager = getSupportFragmentManager()
-            fragManager.beginTransaction().replace(R.id.container, fragment).commit()
-            item.setChecked(true)
-            setTitle(item.title)
-            var drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-            drawer.closeDrawer(GravityCompat.START)
+            changeFragment(fragment)
         }
 
         return true
+    }
+
+    private fun changeFragment(fragment: Fragment) {
+        if (fragment != null) {
+            val fragManager: FragmentManager = getSupportFragmentManager()
+            fragManager.beginTransaction().replace(R.id.container, fragment).commit()
+            setTitle(fragment.id.toString())
+            var drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
+            drawer.closeDrawer(GravityCompat.START)
+        }
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
