@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #Sat Dec 12 17:42:23 MSK 2020
+=======
+#Sat Dec 12 13:11:29 EET 2020
+>>>>>>> 0f7b4031b07809ac93e32c82516eba1fa0b17943
 path.2=classes2.dex
 path.1=classes.dex
 path.0=classes.dex

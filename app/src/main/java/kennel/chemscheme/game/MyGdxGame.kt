@@ -18,8 +18,8 @@ import kennel.chemscheme.positionProcessing.Atom3D
 import kennel.chemscheme.positionProcessing.Structure3D
 import kennel.chemscheme.positionProcessing.Vector
 import kennel.chemscheme.structure.MolStruct
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
+
 
 class MyGdxGame : ApplicationAdapter() {
     private lateinit var cam: PerspectiveCamera
@@ -74,27 +74,58 @@ class MyGdxGame : ApplicationAdapter() {
             argsQueue.add(it)
             funQueue.add {
                 val gotten = argsQueue.removeAt(0) as List<Atom3D>
-                val len = countLen(gotten)
-                val model = modeler.builder.createCylinder(
-                    0.1f, len, 0.1f, 50,
-                    Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
-                    (Usage.Position or Usage.Normal).toLong()
-                )
-                modeler.sticksModels.add(model)
-                val instance = ModelInstance(model)
-                val q = Quaternion(gotten[1].position.toGdx3vec(), 0f)
-                instance.transform.setToLookAt(gotten[0].position.toGdx3vec(), gotten[1].position.toGdx3vec())
-                instance.transform.translate(gotten[0].position.toGdx3vec())
-                atomsInstances.add(instance)
+               // val len = countLen(gotten)
+//                val model = modeler.builder.createCylinder(
+//                        0.1f, len, 0.1f, 50,
+//                        Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
+//                        (Usage.Position or Usage.Normal).toLong()
+//                )
+               // builder
+//                modeler.sticksModels.add(model)
+//                val instance = ModelInstance(model)
+//                Log.i("posMM", "ll")
+//                Log.i("posMM", instance.transform.getTranslation(Vector3(0f, 0f, 0f)).toKennelVector().toString())
+//                Log.i("posMM", "done")
+//                instance.transform.set(
+//                        (gotten[0].position + (gotten[1].position - gotten[0].position) / 2.0).toGdx3vec(),
+//                        Quaternion(((gotten[1].position - gotten[0].position) * Vector(1.0, 1.0, 1.0)).toGdx3vec(),
+//                                calcAngle(Vector(1.0, 0.0, 0.0),
+//                                        (gotten[1].position - gotten[0].position))))
+////                                        0f))
+//                atomsInstances.add(instance)
+                val modelBuilder = ModelBuilder()
+                modelBuilder.begin()
+                val builder = modelBuilder.part("line", 1, 3, Material())
+                builder.setColor(Color.RED)
+                builder.line(gotten[0].position.toGdx3vec(), gotten[1].position.toGdx3vec())
+                val lineModel = modelBuilder.end()
+                val lineInstance = ModelInstance(lineModel)
+                modeler.sticksModels.add(lineModel)
+                atomsInstances.add(lineInstance)
             }
         }
     }
 
+    private fun rotate90(v: Vector): Vector {
+        return Vector(v.y, v.x, v.z)
+    }
+
+    fun Vector3.toKennelVector(): Vector {
+        return Vector(this.x.toDouble(), this.y.toDouble(), this.z.toDouble())
+    }
+
+    private fun calcAngle(v1: Vector, v2: Vector): Float {
+        val scalar = v1.x*v2.x+v1.y*v2.y+v1.z*v2.z
+        val cosAngle = scalar / (v1.magnitude()*v2.magnitude())
+        val degAngle = acos(cosAngle) / PI * 180
+        return degAngle.toFloat()
+    }
+
     fun countLen(points: List<Atom3D>): Float {
         return sqrt(
-            (points[0].position.x - points[1].position.x).pow(2)+
-                    (points[0].position.y - points[1].position.y).pow(2)+
-                    (points[0].position.z - points[1].position.z).pow(2)).toFloat()
+                (points[0].position.x - points[1].position.x).pow(2) +
+                        (points[0].position.y - points[1].position.y).pow(2) +
+                        (points[0].position.z - points[1].position.z).pow(2)).toFloat()
     }
 
     override fun render() {
@@ -131,36 +162,36 @@ class MyGdxGame : ApplicationAdapter() {
                     (Usage.Position or Usage.Normal).toLong())
 
             atomsModels = listOf(
-                AtomModel(
-                    builder.createSphere(1f, 1f, 1f, 50, 50,
-                    Material(ColorAttribute.createDiffuse(Color.BLUE)),
-                    (Usage.Position or Usage.Normal).toLong()),
-                MolStruct.Elements.C),
-                AtomModel(
-                    builder.createSphere(1f, 1f, 1f, 50, 50,
-                        Material(ColorAttribute.createDiffuse(Color.RED)),
-                        (Usage.Position or Usage.Normal).toLong()),
-                    MolStruct.Elements.Cl),
-                AtomModel(
-                    builder.createSphere(1f, 1f, 1f, 50, 50,
-                        Material(ColorAttribute.createDiffuse(Color.BROWN)),
-                        (Usage.Position or Usage.Normal).toLong()),
-                    MolStruct.Elements.Br),
-                AtomModel(
-                    builder.createSphere(1f, 1f, 1f, 50, 50,
-                        Material(ColorAttribute.createDiffuse(Color.CORAL)),
-                        (Usage.Position or Usage.Normal).toLong()),
-                    MolStruct.Elements.H),
-                AtomModel(
-                    builder.createSphere(1f, 1f, 1f, 50, 50,
-                        Material(ColorAttribute.createDiffuse(Color.CYAN)),
-                        (Usage.Position or Usage.Normal).toLong()),
-                    MolStruct.Elements.F),
-                AtomModel(
-                    builder.createSphere(1f, 1f, 1f, 50, 50,
-                        Material(ColorAttribute.createDiffuse(Color.GOLD)),
-                        (Usage.Position or Usage.Normal).toLong()),
-                    MolStruct.Elements.I)
+                    AtomModel(
+                            builder.createSphere(1f, 1f, 1f, 50, 50,
+                                    Material(ColorAttribute.createDiffuse(Color.BLUE)),
+                                    (Usage.Position or Usage.Normal).toLong()),
+                            MolStruct.Elements.C),
+                    AtomModel(
+                            builder.createSphere(1f, 1f, 1f, 50, 50,
+                                    Material(ColorAttribute.createDiffuse(Color.RED)),
+                                    (Usage.Position or Usage.Normal).toLong()),
+                            MolStruct.Elements.Cl),
+                    AtomModel(
+                            builder.createSphere(1f, 1f, 1f, 50, 50,
+                                    Material(ColorAttribute.createDiffuse(Color.BROWN)),
+                                    (Usage.Position or Usage.Normal).toLong()),
+                            MolStruct.Elements.Br),
+                    AtomModel(
+                            builder.createSphere(1f, 1f, 1f, 50, 50,
+                                    Material(ColorAttribute.createDiffuse(Color.CORAL)),
+                                    (Usage.Position or Usage.Normal).toLong()),
+                            MolStruct.Elements.H),
+                    AtomModel(
+                            builder.createSphere(1f, 1f, 1f, 50, 50,
+                                    Material(ColorAttribute.createDiffuse(Color.CYAN)),
+                                    (Usage.Position or Usage.Normal).toLong()),
+                            MolStruct.Elements.F),
+                    AtomModel(
+                            builder.createSphere(1f, 1f, 1f, 50, 50,
+                                    Material(ColorAttribute.createDiffuse(Color.GOLD)),
+                                    (Usage.Position or Usage.Normal).toLong()),
+                            MolStruct.Elements.I)
             )
         }
 
@@ -174,8 +205,8 @@ class MyGdxGame : ApplicationAdapter() {
         }
 
         data class AtomModel(
-            val model: Model,
-            val id: MolStruct.Elements,
+                val model: Model,
+                val id: MolStruct.Elements,
         )
     }
 
