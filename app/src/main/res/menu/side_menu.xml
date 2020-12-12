@@ -5,12 +5,16 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/nav_2d"
             android:icon="@drawable/ic_2d"
             android:title="2D View" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_3d"
             android:icon="@drawable/ic_3d"
             android:title="3D View" />
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@drawable/ic_3d"
+            android:title="Exit" />
     </group>
 </menu>
