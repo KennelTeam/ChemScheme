@@ -30,6 +30,12 @@ class MyGdxGame : ApplicationAdapter() {
     private lateinit var modeler: Modeler
     private val funQueue = mutableListOf<() -> Unit>()
     private val argsQueue = mutableListOf<Any>()
+    private var lastCamPos = Vector(0.0, 0.0, -1.0)
+    private var prevX = 0
+    private var prevY = 0
+    private var curDeltaTime = 0f
+    private val targetDelta = 0.02f
+    private val MAX_NUMBER_OF_POINTS = 20
 
     override fun create() {
         env = Environment()
@@ -48,6 +54,7 @@ class MyGdxGame : ApplicationAdapter() {
         cam.update()
 
         camCtrl = CameraInputController(cam)
+
         Gdx.input.inputProcessor = camCtrl
     }
 
@@ -74,24 +81,15 @@ class MyGdxGame : ApplicationAdapter() {
             argsQueue.add(it)
             funQueue.add {
                 val gotten = argsQueue.removeAt(0) as List<Atom3D>
-               // val len = countLen(gotten)
+//                val len = countLen(gotten)
 //                val model = modeler.builder.createCylinder(
 //                        0.1f, len, 0.1f, 50,
 //                        Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
 //                        (Usage.Position or Usage.Normal).toLong()
 //                )
-               // builder
 //                modeler.sticksModels.add(model)
 //                val instance = ModelInstance(model)
-//                Log.i("posMM", "ll")
-//                Log.i("posMM", instance.transform.getTranslation(Vector3(0f, 0f, 0f)).toKennelVector().toString())
-//                Log.i("posMM", "done")
-//                instance.transform.set(
-//                        (gotten[0].position + (gotten[1].position - gotten[0].position) / 2.0).toGdx3vec(),
-//                        Quaternion(((gotten[1].position - gotten[0].position) * Vector(1.0, 1.0, 1.0)).toGdx3vec(),
-//                                calcAngle(Vector(1.0, 0.0, 0.0),
-//                                        (gotten[1].position - gotten[0].position))))
-////                                        0f))
+//                instance.transform.setToLookAt(gotten[0].position.toGdx3vec(), gotten[1].position.toGdx3vec(), Vector3.Z)
 //                atomsInstances.add(instance)
                 val modelBuilder = ModelBuilder()
                 modelBuilder.begin()
@@ -106,33 +104,75 @@ class MyGdxGame : ApplicationAdapter() {
         }
     }
 
-    private fun rotate90(v: Vector): Vector {
-        return Vector(v.y, v.x, v.z)
+    fun moveCam(vert: Int, horiz: Int) {
+        argsQueue.add(vert)
+        argsQueue.add(horiz)
+        funQueue.add {
+            val vertical = argsQueue.removeFirst() as Int
+            val horizontal = argsQueue.removeFirst() as Int
+            val movingVec = cam.position.toKennelVec() - lastCamPos
+            val lookingDir = cam.direction.toKennelVec()
+            val leftRightDir = movingVec * lookingDir
+            Log.i("CamGDX", "dir: ${movingVec.x}, ${movingVec.y}, ${movingVec.z}")
+            Log.i("CamGDX", "looking: ${lookingDir.x}, ${lookingDir.y}, ${lookingDir.z}")
+            cam.position.add((movingVec*vertical).toGdx3vec())
+            cam.position.add((leftRightDir*horizontal).toGdx3vec())
+        }
     }
 
-    fun Vector3.toKennelVector(): Vector {
-        return Vector(this.x.toDouble(), this.y.toDouble(), this.z.toDouble())
-    }
+//    fun countLen(points: List<Atom3D>): Float {
+//        return sqrt(
+//                (points[0].position.x - points[1].position.x).pow(2) +
+//                        (points[0].position.y - points[1].position.y).pow(2) +
+//                        (points[0].position.z - points[1].position.z).pow(2)).toFloat()
+//    }
 
-    private fun calcAngle(v1: Vector, v2: Vector): Float {
-        val scalar = v1.x*v2.x+v1.y*v2.y+v1.z*v2.z
-        val cosAngle = scalar / (v1.magnitude()*v2.magnitude())
-        val degAngle = acos(cosAngle) / PI * 180
-        return degAngle.toFloat()
-    }
+    fun procFingersTouches() {
+        var curTouched = 0
+        (0 until MAX_NUMBER_OF_POINTS).forEach {
+            if (Gdx.input.isTouched(it)) {
+                curTouched++
+            }
+        }
+        if (curTouched == 2) {
+            Log.i("poooints", "doing")
+            val x = Gdx.input.x
+            val y = Gdx.input.y
+            val ho = when {
+                x > prevX + 10 -> 1
+                x + 10 < prevX -> -1
+                else -> 0
+            }
+            val ve = when {
+                y > prevY + 10 -> 1
+                y + 10 < prevY -> -1
+                else -> 0
+            }
+            moveCam(ve, ho)
+            prevX = x
+            prevY = y
+        }
 
-    fun countLen(points: List<Atom3D>): Float {
-        return sqrt(
-                (points[0].position.x - points[1].position.x).pow(2) +
-                        (points[0].position.y - points[1].position.y).pow(2) +
-                        (points[0].position.z - points[1].position.z).pow(2)).toFloat()
     }
 
     override fun render() {
+        curDeltaTime += Gdx.graphics.deltaTime
+
+        if (curDeltaTime >= targetDelta) {
+            procFingersTouches()
+            curDeltaTime -= targetDelta
+        }
+
+
         funQueue.forEach { it.invoke() }
         funQueue.clear()
         argsQueue.clear()
 
+//        val movingVec = cam.position.toKennelVec() - lastCamPos
+//        val lookingDir = cam.direction.toKennelVec()
+//        Log.i("CamGDX", "dir: ${movingVec.x}, ${movingVec.y}, ${movingVec.z}")
+//        Log.i("CamGDX", "looking: ${lookingDir.x}, ${lookingDir.y}, ${lookingDir.z}")
+        lastCamPos = cam.position.toKennelVec()
         camCtrl.update()
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.width, Gdx.graphics.height)
@@ -238,5 +278,13 @@ class MyGdxGame : ApplicationAdapter() {
 
     fun Vector.toGdx3vec(): Vector3 {
         return Vector3(x.toFloat(), y.toFloat(), z.toFloat())
+    }
+
+    fun Vector3.toKennelVec(): Vector {
+        return Vector(this.x.toDouble(), this.y.toDouble(), this.z.toDouble())
+    }
+
+    operator fun Vector.times(r: Int): Vector {
+        return Vector(this.x*r, this.y*r, this.z*r)
     }
 }

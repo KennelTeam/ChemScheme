@@ -1,6 +1,8 @@
 package kennel.chemscheme.mol3d
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ import kennel.chemscheme.structure.MolStruct
 
 class MolGdxFrag: AndroidFragmentApplication() {
     val gdxGraph = MyGdxGame()
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,7 +26,7 @@ class MolGdxFrag: AndroidFragmentApplication() {
         return i
     }
     fun test3d(): Structure3D{
-        var struct : MolStruct.Structure = MolStruct.Structure()
+        val struct : MolStruct.Structure = MolStruct.Structure()
         struct.add(MolStruct.Elements.C, -1, 0)
         struct.add(MolStruct.Elements.Br, 0, 0)
         struct.add(MolStruct.Elements.H, 0, 1)
