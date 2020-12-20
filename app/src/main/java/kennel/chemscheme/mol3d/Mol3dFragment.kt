@@ -20,6 +20,9 @@ class Mol3dFragment: Fragment() {
     private lateinit var gdxView: MolGdxFrag
     private lateinit var gdx: MyGdxGame
 
+    //
+    // Класс фрагмента приложения, в котором проимзодит три-дэ
+    //
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -14,6 +14,9 @@ import kennel.chemscheme.positionProcessing.Structure3D
 import kennel.chemscheme.structure.MolStruct
 
 class MolGdxFrag: AndroidFragmentApplication() {
+    //
+    // Ето класс, который создает окошко libgdx в качестве фрагмента
+    //
     val gdxGraph = MyGdxGame()
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(

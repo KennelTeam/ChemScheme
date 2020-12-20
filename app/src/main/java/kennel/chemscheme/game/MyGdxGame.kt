@@ -21,12 +21,14 @@ import kennel.chemscheme.structure.MolStruct
 import kotlin.math.*
 
 
+//МЫ ПИШЕМ ИСТОРИЮ!!!!!!!!!111
 class MyGdxGame : ApplicationAdapter() {
+    //Ну все, отдаю вам все свои должные!
     private lateinit var cam: PerspectiveCamera
     private lateinit var batch: ModelBatch
     private lateinit var env: Environment
     private lateinit var camCtrl: CameraInputController
-    private val atomsInstances = mutableListOf<ModelInstance>()
+    private val instances = mutableListOf<ModelInstance>()
     private lateinit var modeler: Modeler
     private val funQueue = mutableListOf<() -> Unit>()
     private val argsQueue = mutableListOf<Any>()
@@ -38,14 +40,15 @@ class MyGdxGame : ApplicationAdapter() {
     private val MAX_NUMBER_OF_POINTS = 20
 
     override fun create() {
+        // Задаем свет
         env = Environment()
         env.set(ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f))
         addLights()
 
         modeler = Modeler()
-
         batch = ModelBatch()
 
+        // Создаем камеру
         cam = PerspectiveCamera(67f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
         cam.position.set(10f, 10f, 10f)
         cam.lookAt(0f, 0f, 0f)
@@ -53,8 +56,9 @@ class MyGdxGame : ApplicationAdapter() {
         cam.far = 300f
         cam.update()
 
+        // А ето, чтобы камеру можно было двигать, но тут есть не все фичи
+        // и камеру можно перемещать не по всем направлениям :((
         camCtrl = CameraInputController(cam)
-
         Gdx.input.inputProcessor = camCtrl
     }
 
@@ -64,33 +68,28 @@ class MyGdxGame : ApplicationAdapter() {
     }
 
     private fun addAtomToGraph() {
+        // Создаем modelInstance и задаем положение ы пространстве
         val arg = argsQueue.removeAt(0) as Atom3D
         val inst = ModelInstance(modeler.getModelForId(arg.atom.name))
         inst.transform.set(arg.position.toGdx3vec(), Quaternion(0f, 0f, 0f, 0f))
 
-        atomsInstances.add(inst)
+        instances.add(inst)
     }
 
+    // Тута создаются все модельки, чтение данных из Structure3D (шок, не правда ли)
     fun createFromArray(data: Structure3D) {
         data.vertices.forEach {
             argsQueue.add(it)
+            // А тута создаются атомы
             funQueue.add { addAtomToGraph() }
         }
         val connsArr = getConnections(data)
         connsArr.forEach {
             argsQueue.add(it)
             funQueue.add {
+                // Берем параметры из очереди аргументов
                 val gotten = argsQueue.removeAt(0) as List<Atom3D>
-//                val len = countLen(gotten)
-//                val model = modeler.builder.createCylinder(
-//                        0.1f, len, 0.1f, 50,
-//                        Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
-//                        (Usage.Position or Usage.Normal).toLong()
-//                )
-//                modeler.sticksModels.add(model)
-//                val instance = ModelInstance(model)
-//                instance.transform.setToLookAt(gotten[0].position.toGdx3vec(), gotten[1].position.toGdx3vec(), Vector3.Z)
-//                atomsInstances.add(instance)
+                // Создаем линии
                 val modelBuilder = ModelBuilder()
                 modelBuilder.begin()
                 val builder = modelBuilder.part("line", 1, 3, Material())
@@ -99,12 +98,14 @@ class MyGdxGame : ApplicationAdapter() {
                 val lineModel = modelBuilder.end()
                 val lineInstance = ModelInstance(lineModel)
                 modeler.sticksModels.add(lineModel)
-                atomsInstances.add(lineInstance)
+                instances.add(lineInstance)
             }
         }
     }
 
-    fun moveCam(vert: Int, horiz: Int) {
+    // Здеся попытка перемещения камеры при ведении двумя пальцами,
+    // но ничего не получилося ((
+    private fun moveCam(vert: Int, horiz: Int) {
         argsQueue.add(vert)
         argsQueue.add(horiz)
         funQueue.add {
@@ -120,14 +121,9 @@ class MyGdxGame : ApplicationAdapter() {
         }
     }
 
-//    fun countLen(points: List<Atom3D>): Float {
-//        return sqrt(
-//                (points[0].position.x - points[1].position.x).pow(2) +
-//                        (points[0].position.y - points[1].position.y).pow(2) +
-//                        (points[0].position.z - points[1].position.z).pow(2)).toFloat()
-//    }
-
-    fun procFingersTouches() {
+    // Тут происходит отслеживание нажатия двух пальцев, чтобы можно было таскать камеру
+    // в пространстве и вращать вокруг оси смотрения
+    private fun procFingersTouches() {
         var curTouched = 0
         (0 until MAX_NUMBER_OF_POINTS).forEach {
             if (Gdx.input.isTouched(it)) {
@@ -155,6 +151,10 @@ class MyGdxGame : ApplicationAdapter() {
 
     }
 
+
+    // Новые модели и инстанции, как у меня получилось, можно создавать только в функции render,
+    // поэтому есть переменные funQueue и funArgs, куда добавляются функции, которые потом исполняются
+    // во время рендера
     override fun render() {
         curDeltaTime += Gdx.graphics.deltaTime
 
@@ -168,10 +168,6 @@ class MyGdxGame : ApplicationAdapter() {
         funQueue.clear()
         argsQueue.clear()
 
-//        val movingVec = cam.position.toKennelVec() - lastCamPos
-//        val lookingDir = cam.direction.toKennelVec()
-//        Log.i("CamGDX", "dir: ${movingVec.x}, ${movingVec.y}, ${movingVec.z}")
-//        Log.i("CamGDX", "looking: ${lookingDir.x}, ${lookingDir.y}, ${lookingDir.z}")
         lastCamPos = cam.position.toKennelVec()
         camCtrl.update()
 
@@ -180,7 +176,7 @@ class MyGdxGame : ApplicationAdapter() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
 
         batch.begin(cam)
-        atomsInstances.forEach { batch.render(it, env) }
+        instances.forEach { batch.render(it, env) }
         batch.end()
     }
 
@@ -190,13 +186,13 @@ class MyGdxGame : ApplicationAdapter() {
     }
 
     class Modeler {
-        val builder: ModelBuilder
+        private val builder: ModelBuilder = ModelBuilder()
         val atomsModels: List<AtomModel>
         val sticksModels = mutableListOf<Model>()
         private val defModel: Model
 
+        // Тут создаются модельки атомов, наверное, это можно сделать лучше, но мне лень. (точка).
         init {
-            builder = ModelBuilder()
             defModel = builder.createSphere(1f, 1f, 1f, 50, 50,
                     Material(ColorAttribute.createDiffuse(Color.GREEN)),
                     (Usage.Position or Usage.Normal).toLong())
@@ -250,7 +246,8 @@ class MyGdxGame : ApplicationAdapter() {
         )
     }
 
-    fun getConnections(atoms: Structure3D): List<List<Atom3D>> {
+    // Получить соединения всех атомов друг с другом - возврщается список (атом, атом) соединеий
+    private fun getConnections(atoms: Structure3D): List<List<Atom3D>> {
         val res = mutableListOf<List<Atom3D>>()
 
         atoms.vertices.forEach {
@@ -272,6 +269,8 @@ class MyGdxGame : ApplicationAdapter() {
         return res.toList()
     }
 
+
+    // Тут всякие утилиты для структур - доп функции конвертации одного в другое
     fun List<Atom3D>.kennelEquals(other: List<Atom3D>): Boolean {
         return this == other || listOf(this[1], this[0]) == other
     }
