@@ -67,7 +67,7 @@ class StructuralFormulaFragment: Fragment() {
                     }
                     if (!atomClick) {
                         canvas.drawLine(selectedAtom!!.x, selectedAtom!!.y, event.x, event.y, paint)
-                        addAtom(event.x, event.y)
+                        addAtom(event.x, event.y, selectedAtom!!)
                         focusAtom(selectedAtom)
                     }
                 } else {
@@ -81,12 +81,12 @@ class StructuralFormulaFragment: Fragment() {
             true
         }
 
-        addAtom(400f, 400f)
+        addAtom(400f, 400f, null)
 
         return binding.root
     }
 
-    private fun addAtom(x: Float, y: Float) {
+    private fun addAtom(x: Float, y: Float, newNeighbor: Atom?) {
         paint.style = Paint.Style.FILL
         paint.color = backgroundColor
         canvas.drawCircle(x, y, atomRadius, paint)

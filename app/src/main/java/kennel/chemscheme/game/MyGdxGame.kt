@@ -14,16 +14,38 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
 import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.math.collision.BoundingBox
+import kennel.chemscheme.BuildConfig
 import kennel.chemscheme.positionProcessing.Atom3D
 import kennel.chemscheme.positionProcessing.Structure3D
 import kennel.chemscheme.positionProcessing.Vector
 import kennel.chemscheme.structure.MolStruct
 import kotlin.math.*
 
+operator fun Vector3.plus(other : Vector3) = Vector3(x + other.x, y + other.y, z + other.z)
+operator fun Vector3.minus(other : Vector3) = Vector3(x - other.x, y - other.y, z - other.z)
+operator fun Vector3.times(k : Float) = Vector3(x * k, y * k, z*k)
+operator fun Vector3.div(k : Float) = Vector3(x / k, y / k, z/k)
+fun Vector3.power(k : Float) = Vector3(
+    Math.pow(x.toDouble(), k.toDouble()).toFloat(),
+    Math.pow(y.toDouble(), k.toDouble()).toFloat(),
+    Math.pow(z.toDouble(), k.toDouble()).toFloat()
+)
+
+fun min(a : Vector3, b : Vector3) : Vector3{
+    return Vector3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z))
+}
+
+fun max(a : Vector3, b : Vector3) : Vector3{
+    return Vector3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z))
+}
+
+enum class VisualizationMode {
+    ZHELUD, CLASSIC
+}
 
 //МЫ ПИШЕМ ИСТОРИЮ!!!!!!!!!111
-class MyGdxGame : ApplicationAdapter() {
+class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
+
     //Ну все, отдаю вам все свои должные!
     private lateinit var cam: PerspectiveCamera
     private lateinit var batch: ModelBatch
@@ -39,11 +61,19 @@ class MyGdxGame : ApplicationAdapter() {
     private var curDeltaTime = 0f
     private val targetDelta = 0.02f
     private val MAX_NUMBER_OF_POINTS = 20
+    private val visualizationMode : VisualizationMode = VisualizationMode.CLASSIC
+
+    private object constants {
+        val zheludScale = 1.5f
+        val classicScale = 0.7f
+        val hydrogenScale = 0.5f
+    }
 
     override fun create() {
+
         // Задаем свет
         env = Environment()
-        env.set(ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 3f))
+        env.set(ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f))
         addLights()
 
         modeler = Modeler()
@@ -51,8 +81,8 @@ class MyGdxGame : ApplicationAdapter() {
 
         // Создаем камеру
         cam = PerspectiveCamera(67f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-        cam.position.set(10f, 10f, 10f)
-        cam.lookAt(0f, 0f, 0f)
+        //cam.position.set(1f, 1f, 1f)
+        //cam.lookAt(0f, 0f, 0f)
         cam.near = 1f
         cam.far = 300f
         cam.update()
@@ -61,6 +91,8 @@ class MyGdxGame : ApplicationAdapter() {
         // и камеру можно перемещать не по всем направлениям :((
         camCtrl = CameraInputController(cam)
         Gdx.input.inputProcessor = camCtrl
+        Log.i("test", "create")
+        onCreate.invoke()
     }
 
     private fun addLights() {
@@ -74,11 +106,62 @@ class MyGdxGame : ApplicationAdapter() {
         val inst = ModelInstance(modeler.getModelForId(arg.atom.name))
         inst.transform.set(arg.position.toGdx3vec(), Quaternion(0f, 0f, 0f, 0f))
 
+        when(visualizationMode){
+            VisualizationMode.ZHELUD -> inst.transform.scale(constants.zheludScale, constants.zheludScale, constants.zheludScale)
+            VisualizationMode.CLASSIC -> inst.transform.scale(constants.classicScale, constants.classicScale, constants.classicScale)
+        }
+
+        if (arg.atom.name == MolStruct.Elements.H){
+            inst.transform.scale(constants.hydrogenScale, constants.hydrogenScale, constants.hydrogenScale)
+        }
+
+
         instances.add(inst)
+    }
+
+    private fun genCylinder(){
+        /*val builder = ModelBuilder()
+        var c = builder.createCylinder(2f, 2f, 2f, 20,
+            Material(ColorAttribute.createDiffuse(Color.RED)), (Usage.Position or Usage.Normal).toLong())
+        val cInstance = ModelInstance(c)
+        instances.add(cInstance)*/
+    }
+
+    private fun turnCamera(struct : Structure3D){
+        var minPos : Vector3 = Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE).power(2f)
+        var maxPos : Vector3 = Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE).power(2f)
+
+        //var middle = Vector3.Zero
+
+        struct.vertices.forEach {
+            //middle = middle + it.position.toGdx3vec().power(2f)
+            minPos = min(minPos, it.position.toGdx3vec())
+            maxPos = max(maxPos, it.position.toGdx3vec())
+        }
+
+        var size = 2f * max(maxPos.x - minPos.x, maxPos.y - minPos.y) / 2
+        var alpha = 33.5f * Math.PI / 180
+        var distance = size * cos(alpha) / sin(alpha)
+        cam.position.set(0f,0f, distance.toFloat())
+
+        Log.i("test", "$maxPos")
+        Log.i("test", "$minPos")
+
+        val center = (minPos + maxPos) / 2f
+
+        //middle = (middle / (struct.vertices.size.toFloat())).power(0.5f)
+
+        cam.lookAt(center)
+        camCtrl.target = center
+        cam.update()
+        //Log.i("test", "middle " + "$middle")
+        //Log.i("test", "$center")
     }
 
     // Тута создаются все модельки, чтение данных из Structure3D (шок, не правда ли)
     fun createFromArray(data: Structure3D) {
+        Log.i("test", "createFromArray")
+        turnCamera(data)
         data.vertices.forEach {
             argsQueue.add(it)
             // А тута создаются атомы
@@ -89,9 +172,35 @@ class MyGdxGame : ApplicationAdapter() {
             argsQueue.add(it)
             funQueue.add {
                 // Берем параметры из очереди аргументов
+                if (BuildConfig.DEBUG && !(argsQueue[0] is List<*>)) {
+                    error("argsQueue is not list")
+                }
+                if (BuildConfig.DEBUG && !((argsQueue[0] as List<*>)[0] is Atom3D)){
+                    error("argsQueue is not list of Atom3D")
+                }
+
                 val gotten = argsQueue.removeAt(0) as List<Atom3D>
+
+                var direction = gotten[0].position - gotten[1].position
+                var perpendicular = (direction * Vector(0.0, 0.0, 1.0)) * direction
+
+                //var perpendicular = Vector(-direction.y, direction.x, direction.z) * direction
+                val builder = ModelBuilder()
+                var c = builder.createCylinder(0.1f, direction.magnitude().toFloat(), 0.1f, 20,
+                    Material(ColorAttribute.createDiffuse(Color.GRAY)), (Usage.Position or Usage.Normal).toLong())
+                val cInstance = ModelInstance(c)
+                //cInstance.transform.setToLookAt((Vector(1.0, 0.0, 0.0)).toGdx3vec(), direction.toGdx3vec())
+                cInstance.transform.setToRotation(direction.toGdx3vec(), Vector3.Y);
+                cInstance.transform.set(((gotten[0].position + gotten[1].position) / 2.0).toGdx3vec(),
+                    cInstance.transform.getRotation(Quaternion()))
+
+
+
+
+                instances.add(cInstance)
+
                 // Создаем линии
-                val modelBuilder = ModelBuilder()
+                /*val modelBuilder = ModelBuilder()
                 modelBuilder.begin()
                 val builder = modelBuilder.part("line", 1, 3, Material())
                 builder.setColor(Color.RED)
@@ -99,7 +208,7 @@ class MyGdxGame : ApplicationAdapter() {
                 val lineModel = modelBuilder.end()
                 val lineInstance = ModelInstance(lineModel)
                 modeler.sticksModels.add(lineModel)
-                instances.add(lineInstance)
+                instances.add(lineInstance)*/
             }
         }
     }
@@ -157,20 +266,20 @@ class MyGdxGame : ApplicationAdapter() {
     // поэтому есть переменные funQueue и funArgs, куда добавляются функции, которые потом исполняются
     // во время рендера
     override fun render() {
-        curDeltaTime += Gdx.graphics.deltaTime
+        genCylinder()
+        //curDeltaTime += Gdx.graphics.deltaTime
 
-        if (curDeltaTime >= targetDelta) {
+        /*if (curDeltaTime >= targetDelta) {
             procFingersTouches()
             curDeltaTime -= targetDelta
-        }
-
+        }*/
 
         funQueue.forEach { it.invoke() }
         funQueue.clear()
         argsQueue.clear()
 
-        lastCamPos = cam.position.toKennelVec()
-        camCtrl.update()
+        //lastCamPos = cam.position.toKennelVec()
+
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.width, Gdx.graphics.height)
         Gdx.gl.glClearColor(1f, 1f, 1f, 1f)
@@ -178,6 +287,7 @@ class MyGdxGame : ApplicationAdapter() {
 
         batch.begin(cam)
         instances.forEach { batch.render(it, env) }
+        camCtrl.update()
         batch.end()
     }
 
