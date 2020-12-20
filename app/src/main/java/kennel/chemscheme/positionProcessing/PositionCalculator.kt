@@ -44,15 +44,15 @@ class PositionCalculator {
             alreadyVisited.add(vertex)
             result.add(vertex)
             //Идем по всем соседям этого атома
-            for (index : Int in vertex.links){
+            for (link : AtomLink in vertex.links){
                 //которые при этом мы еще не рассмотрели
-                if(!alreadyVisited.contains(graph.vertses[index])){
+                if(!alreadyVisited.contains(link.atom)){
                     //аналогично выполняем функцию для этого соседа
-                    var variant = getLongestCarbon(graph, graph.vertses[index], alreadyVisited)
+                    var variant = getLongestCarbon(graph, link.atom, alreadyVisited)
                     //Если полученная цепочка больше, чем то, что есть сейчас,
                     //то заменяем старую на полученную только что
                     if(variant.size + 1 > result.size){
-                        result = mutableListOf<Atom>(vertex)
+                        result = mutableListOf<BaseAtom>(vertex)
                         result.addAll(variant)
                     }
                 }
@@ -97,7 +97,7 @@ class PositionCalculator {
         При том эти вектора - это направления атомов (типа они как раз задают зигзаг,
         который получается из этой формулы)
          */
-        private fun drawSequence(graph: Structure, sequence : MutableList<Atom3D>, right : Vector, left : Vector) : MutableList<Atom3D>{
+        private fun drawSequence(graph: MolStruct, sequence : MutableList<Atom3D>, right : Vector, left : Vector) : MutableList<Atom3D>{
             //Итоговый массив с Atom3D
             var result = mutableListOf<Atom3D>()
             //Позиция i-го атома (считаеся, что 0-й атом уже поставлен на нужное место и остальные
@@ -120,20 +120,20 @@ class PositionCalculator {
 
                 //Чтобы при поиске цепочек не найти кусок той цепочки, по которой мы и так сейчас идем
                 //скажем, что во всех атомах нашей основной цепочки мы "уже были"
-                var neighbours = mutableSetOf<Atom>()
-                neighbours.add(sequence[index].atom)
-                neighbours.add(sequence[index - 1].atom)
+                var neighbours = mutableSetOf<BaseAtom>()
+                neighbours.add(sequence[index])
+                neighbours.add(sequence[index - 1])
                 if(index != sequence.size - 1){
-                    neighbours.add(sequence[index + 1].atom)
+                    neighbours.add(sequence[index + 1])
                 }
 
                 //Теперь идем по всем остальным атомам, которые соединены с i-м атомом цепочки,
                 //но не включены в цепочку
-                for (atomInd : Int in sequence[index].atom.links){
+                for (atomLink : AtomLink in sequence[index].links){
                     //Отбросим все, которые включены в цепочку
                     var inSequence : Boolean = false
                     for (atom : Atom3D in sequence){
-                        if(atom.atom == graph.vertses[atomInd]){
+                        if(atom == atomLink.atom){
                             inSequence = true
                             break
                         }
