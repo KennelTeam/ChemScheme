@@ -175,7 +175,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
                 val gotten = argsQueue.removeAt(0) as List<Atom3D>
 
                 var direction = gotten[0].position - gotten[1].position
-                var perpendicular = (direction * Vector(0.0, 0.0, 1.0)) * direction
+                var perpendicular = (direction * Vector(0.0, 1.0, 0.0)) * direction
 
                 //var perpendicular = Vector(-direction.y, direction.x, direction.z) * direction
                 val builder = ModelBuilder()
