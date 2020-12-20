@@ -17,17 +17,20 @@ class MolGdxFrag: AndroidFragmentApplication() {
     //
     // Ето класс, который создает окошко libgdx в качестве фрагмента
     //
-    val gdxGraph = MyGdxGame()
+    val gdxGraph = MyGdxGame({onGdxInitialized()})
+
     @SuppressLint("ClickableViewAccessibility")
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val i = initializeForView(gdxGraph)
-        gdxGraph.createFromArray(test3d())
+
         return i
     }
+
+    fun onGdxInitialized(){
+        gdxGraph.createFromArray(test3d())
+    }
+
+
     fun test3d(): Structure3D{
         val struct : MolStruct.Structure = MolStruct.Structure()
         struct.add(MolStruct.Elements.C, -1, 0)

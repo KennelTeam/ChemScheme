@@ -1,6 +1,7 @@
 package kennel.chemscheme.positionProcessing
 
 import kennel.chemscheme.structure.MolStruct.*
+import kotlin.math.min
 import kotlin.math.sqrt
 
 //Основной (по сути статический) класс для вычисления 3d позиций атомов в молекуле
@@ -154,8 +155,12 @@ class PositionCalculator {
                     for (i : Int in 1 until nextSequence.size){
                         nextSequence3d.add(Atom3D(nextSequence[i]))
                     }
+
+                    var secondDirection = if(index % 2 == 0) right else left
+                    nextDirection = if(index % 2 == 0) nextDirection else -nextDirection
+
                     //И вызовем рекурсивную функцию
-                    result.addAll(drawSequence(graph, nextSequence3d, right, nextDirection))
+                    result.addAll(drawSequence(graph, nextSequence3d, secondDirection, nextDirection))
                 }
                 //Ну теперь можно и добавить наш атом в список готовых (обработанных) атомов
                 result.add(sequence[index])
@@ -194,6 +199,24 @@ class PositionCalculator {
             atoms3d.addAll(drawSequence(structure, sequence3d, Vector(sqrt(3.0), 1.0, 0.0), Vector(
                 sqrt(3.0), -1.0, 0.0)
             ))
+
+            var minDistance = Float.MAX_VALUE
+            for (atom1 in atoms3d){
+                for (atom2 in atoms3d){
+                    if(atom1 != atom2) {
+                        var distance = (atom1.position - atom2.position).magnitude().toFloat()
+                        minDistance = min(minDistance, distance)
+                    }
+                }
+            }
+
+            if(minDistance > 0){
+                var coefficient = 1f / minDistance
+
+                for (atom in atoms3d){
+                    atom.position = atom.position * coefficient.toDouble()
+                }
+            }
 
             //Сохраним результат в виде 3d структуры
             var result : Structure3D = Structure3D()
