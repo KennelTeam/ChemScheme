@@ -43,48 +43,18 @@ fun readFromFile(context: Context): String {
     return ret
 }
 
-fun Array<Int>.PySlice(A: Int, B: Int): Array<Int> {
-    var answ: Array<Int> = arrayOf();
-    for (i: Int in A..B) {
-        answ += arrayOf(this[i]);
-    }
-    return answ;
-}
-
-fun Array<Int>.PyRemove(index: Int): Array<Int> {
-    return this.PySlice(0, index - 1) + this.PySlice(index + 1, this.size - 1);
-}
-
 class MolStruct {
-    enum class Elements {
-        C, H, O, Cl, Br, I, F
-    }
     @Serializable
-    class Atom(var name: Elements, var links: Array<Int>) {
-        override fun toString(): String {
-            return "$name, links: $links"
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if(other is Atom){
-                return name == other.name && links.equals(other.links)
-            } else{
-                return false
-            }
-        }
-    }
-
-    @Serializable
-    class Structure() {
-        var vertses = emptyArray<Atom>();
-        fun add(Name: Elements, Binding: Int, Sight: Int) { // добавляет атом к конструкции
-            if(Binding >= 0) {
-                vertses += arrayOf(Atom(Name, arrayOf(Binding)));
-                vertses[Binding].links =
-                        vertses[Binding].links.PySlice(0, Sight - 1) + arrayOf(vertses.size - 1) +
-                                vertses[Binding].links.PySlice(Sight, vertses[Binding].links.size - 1);
+    class Structure {
+        var vertses = emptyArray<BaseAtom>();
+        fun add(type: AtomTypes, connection: BaseAtom, sight: Int) {
+            if(connection >= 0) {
+                vertses += arrayOf(BaseAtom(Name, arrayOf(connection)));
+                vertses[connection].links =
+                        vertses[connection].links.PySlice(0, sight - 1) + arrayOf(vertses.size - 1) +
+                                vertses[connection].links.PySlice(sight, vertses[connection].links.size - 1);
             } else {
-                vertses += arrayOf(Atom(Name, arrayOf()));
+                vertses += arrayOf(BaseAtom(Name, arrayOf()));
             }
         }
 
@@ -101,7 +71,7 @@ class MolStruct {
             }
         }
 
-        fun getByName(Name: Elements): Array<Int> {
+        fun getByName(Name: AtomTypes): Array<Int> {
             var answ = emptyArray<Int>();
             for (i: Int in vertses.indices) {
                 if (vertses[i].name == Name) {
@@ -109,14 +79,6 @@ class MolStruct {
                 }
             }
             return answ;
-        }
-
-        fun write(fname: Context) {
-            writeToFile(Json.encodeToString(this), fname);
-        }
-
-        fun read(context: Context) {
-            return Json.decodeFromString(readFromFile(context));
         }
     }
 }

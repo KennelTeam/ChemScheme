@@ -1,34 +1,17 @@
 {
     "logs": [
         {
-            "outputFile": "/home/nikolay/Documents/KOLYA/Прога/ChemScheme/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
+            "outputFile": "C:\\Users\\alexe\\Documents\\Hackatons\\ChemScheme\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
             "map": [
                 {
-                    "source": "/home/nikolay/.gradle/caches/transforms-2/files-2.1/e536cae62ec184cd733eeb90eef0feed/appcompat-1.2.0/res/values-night-v8/values-night-v8.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9",
-                        "startColumns": "4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,125,209,293,389,491,593,687",
-                        "endColumns": "69,83,83,95,101,101,93,88",
-                        "endOffsets": "120,204,288,384,486,588,682,771"
-                    },
-                    "to": {
-                        "startLines": "2,3,4,5,6,7,8,38",
-                        "startColumns": "4,4,4,4,4,4,4,4",
-                        "startOffsets": "100,170,254,338,434,536,638,3316",
-                        "endColumns": "69,83,83,95,101,101,93,88",
-                        "endOffsets": "165,249,333,429,531,633,727,3400"
-                    }
-                },
-                {
-                    "source": "/home/nikolay/Documents/KOLYA/Прога/ChemScheme/app/src/main/res/values-night/themes.xml",
+                    "source": "C:\\Users\\alexe\\Documents\\Hackatons\\ChemScheme\\app\\src\\main\\res\\values-night\\themes.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
-                        "startOffsets": "100",
+                        "startOffsets": "102",
                         "endLines": "14",
                         "endColumns": "12",
-                        "endOffsets": "819"
+                        "endOffsets": "833"
                     },
                     "to": {
                         "startLines": "9",
@@ -40,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "/home/nikolay/.gradle/caches/transforms-2/files-2.1/8c8143074b74a372c639e4d0caf0d922/material-1.2.1/res/values-night-v8/values-night-v8.xml",
+                    "source": "C:\\Users\\alexe\\.gradle\\caches\\transforms-2\\files-2.1\\8c8143074b74a372c639e4d0caf0d922\\material-1.2.1\\res\\values-night-v8\\values-night-v8.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -54,6 +37,23 @@
                         "startOffsets": "1454,1542,1666,1768,1870,1986,2088,2202,2330,2446,2568,2704,2824,2958,3078,3190,3405,3543,3667,3797,3919,4057,4173",
                         "endColumns": "87,123,101,101,115,101,113,127,115,121,135,119,133,119,111,125,137,123,129,121,137,115,119",
                         "endOffsets": "1537,1661,1763,1865,1981,2083,2197,2325,2441,2563,2699,2819,2953,3073,3185,3311,3538,3662,3792,3914,4052,4168,4288"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\alexe\\.gradle\\caches\\transforms-2\\files-2.1\\e536cae62ec184cd733eeb90eef0feed\\appcompat-1.2.0\\res\\values-night-v8\\values-night-v8.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,125,209,293,389,491,593,687",
+                        "endColumns": "69,83,83,95,101,101,93,88",
+                        "endOffsets": "120,204,288,384,486,588,682,771"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,38",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "100,170,254,338,434,536,638,3316",
+                        "endColumns": "69,83,83,95,101,101,93,88",
+                        "endOffsets": "165,249,333,429,531,633,727,3400"
                     }
                 }
             ]
