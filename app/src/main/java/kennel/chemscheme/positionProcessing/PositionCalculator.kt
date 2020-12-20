@@ -1,6 +1,11 @@
 package kennel.chemscheme.positionProcessing
 
 import android.util.Log
+import com.badlogic.gdx.utils.compression.lzma.Base
+import kennel.chemscheme.structure.AtomLink
+import kennel.chemscheme.structure.BaseAtom
+import kennel.chemscheme.structure.MolStruct
+import kennel.chemscheme.structure.AtomType
 import kennel.chemscheme.structure.MolStruct.*
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -9,20 +14,20 @@ import kotlin.math.sqrt
 class PositionCalculator {
     companion object {
         //Ищет все одноричные углероды. Используется при поиске самой длинной углеродной цепочки
-        private fun findAllIsolated(graph : Structure) : MutableList<Atom>{
-            var result = mutableListOf<Atom>()
+        private fun findAllIsolated(graph : MolStruct) : MutableList<BaseAtom>{
+            var result = mutableListOf<BaseAtom>()
             //Идем по всем углеродам
-            for (carbon : Int in graph.getByName(Elements.C)){
+            for (carbon : BaseAtom in graph.getByName(AtomType.Carbon)){
                 //Считаем, сколько у него соседей-углеродов
                 var carbonsFound = 0
-                for (atom : Int in graph.vertses[carbon].links){
-                    if(graph.vertses[atom].name == Elements.C){
+                for (link : AtomLink in carbon.links){
+                    if(link.atom.type == AtomType.Carbon){
                         carbonsFound++
                     }
                 }
                 //Если мало, то добавляем в итоговый список
                 if(carbonsFound < 2){
-                    result.add(graph.vertses[carbon])
+                    result.add(carbon)
                 }
             }
 
@@ -34,8 +39,8 @@ class PositionCalculator {
         //graph - молекула, в которой ищем
         //vertex - атом, с которого должна начинаться цепочка
         //alreadyVisited - множество вершин, в которых мы уже побывали (их не надо проверять)
-        private fun getLongestCarbon(graph : Structure, vertex : Atom, alreadyVisited : MutableSet<Atom>) : MutableList<Atom>{
-            var result = mutableListOf<Atom>()
+        private fun getLongestCarbon(graph : MolStruct, vertex : BaseAtom, alreadyVisited : MutableSet<BaseAtom>) : MutableList<BaseAtom>{
+            var result = mutableListOf<BaseAtom>()
             alreadyVisited.add(vertex)
             result.add(vertex)
             //Идем по всем соседям этого атома
