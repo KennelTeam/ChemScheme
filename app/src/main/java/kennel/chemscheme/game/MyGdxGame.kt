@@ -24,7 +24,12 @@ import kotlin.math.*
 operator fun Vector3.plus(other : Vector3) = Vector3(x + other.x, y + other.y, z + other.z)
 operator fun Vector3.minus(other : Vector3) = Vector3(x - other.x, y - other.y, z - other.z)
 operator fun Vector3.times(k : Float) = Vector3(x * k, y * k, z*k)
-operator fun Vector3.div(k : Float) = Vector3(x / k, y / k, z*k)
+operator fun Vector3.div(k : Float) = Vector3(x / k, y / k, z/k)
+fun Vector3.power(k : Float) = Vector3(
+    Math.pow(x.toDouble(), k.toDouble()).toFloat(),
+    Math.pow(y.toDouble(), k.toDouble()).toFloat(),
+    Math.pow(z.toDouble(), k.toDouble()).toFloat()
+)
 
 fun min(a : Vector3, b : Vector3) : Vector3{
     return Vector3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z))
@@ -76,7 +81,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
 
         // Создаем камеру
         cam = PerspectiveCamera(67f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-        cam.position.set(10f, 10f, 10f)
+        //cam.position.set(1f, 1f, 1f)
         //cam.lookAt(0f, 0f, 0f)
         cam.near = 1f
         cam.far = 300f
@@ -114,20 +119,43 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
         instances.add(inst)
     }
 
+    private fun genCylinder(){
+        /*val builder = ModelBuilder()
+        var c = builder.createCylinder(2f, 2f, 2f, 20,
+            Material(ColorAttribute.createDiffuse(Color.RED)), (Usage.Position or Usage.Normal).toLong())
+        val cInstance = ModelInstance(c)
+        instances.add(cInstance)*/
+    }
+
     private fun turnCamera(struct : Structure3D){
-        var minPos : Vector3 = Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
-        var maxPos : Vector3 = Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
+        var minPos : Vector3 = Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE).power(2f)
+        var maxPos : Vector3 = Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE).power(2f)
+
+        //var middle = Vector3.Zero
+
         struct.vertices.forEach {
+            //middle = middle + it.position.toGdx3vec().power(2f)
             minPos = min(minPos, it.position.toGdx3vec())
             maxPos = max(maxPos, it.position.toGdx3vec())
         }
+
+        var size = 2f * max(maxPos.x - minPos.x, maxPos.y - minPos.y) / 2
+        var alpha = 33.5f * Math.PI / 180
+        var distance = size * cos(alpha) / sin(alpha)
+        cam.position.set(0f,0f, distance.toFloat())
+
+        Log.i("test", "$maxPos")
+        Log.i("test", "$minPos")
+
         val center = (minPos + maxPos) / 2f
+
+        //middle = (middle / (struct.vertices.size.toFloat())).power(0.5f)
 
         cam.lookAt(center)
         camCtrl.target = center
         cam.update()
-
-        Log.i("test", "$center")
+        //Log.i("test", "middle " + "$middle")
+        //Log.i("test", "$center")
     }
 
     // Тута создаются все модельки, чтение данных из Structure3D (шок, не правда ли)
@@ -152,8 +180,27 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
                 }
 
                 val gotten = argsQueue.removeAt(0) as List<Atom3D>
+
+                var direction = gotten[0].position - gotten[1].position
+                var perpendicular = (direction * Vector(0.0, 0.0, 1.0)) * direction
+
+                //var perpendicular = Vector(-direction.y, direction.x, direction.z) * direction
+                val builder = ModelBuilder()
+                var c = builder.createCylinder(0.1f, direction.magnitude().toFloat(), 0.1f, 20,
+                    Material(ColorAttribute.createDiffuse(Color.GRAY)), (Usage.Position or Usage.Normal).toLong())
+                val cInstance = ModelInstance(c)
+                //cInstance.transform.setToLookAt((Vector(1.0, 0.0, 0.0)).toGdx3vec(), direction.toGdx3vec())
+                cInstance.transform.setToRotation(direction.toGdx3vec(), Vector3.Y);
+                cInstance.transform.set(((gotten[0].position + gotten[1].position) / 2.0).toGdx3vec(),
+                    cInstance.transform.getRotation(Quaternion()))
+
+
+
+
+                instances.add(cInstance)
+
                 // Создаем линии
-                val modelBuilder = ModelBuilder()
+                /*val modelBuilder = ModelBuilder()
                 modelBuilder.begin()
                 val builder = modelBuilder.part("line", 1, 3, Material())
                 builder.setColor(Color.RED)
@@ -161,7 +208,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
                 val lineModel = modelBuilder.end()
                 val lineInstance = ModelInstance(lineModel)
                 modeler.sticksModels.add(lineModel)
-                instances.add(lineInstance)
+                instances.add(lineInstance)*/
             }
         }
     }
@@ -219,7 +266,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     // поэтому есть переменные funQueue и funArgs, куда добавляются функции, которые потом исполняются
     // во время рендера
     override fun render() {
-
+        genCylinder()
         //curDeltaTime += Gdx.graphics.deltaTime
 
         /*if (curDeltaTime >= targetDelta) {

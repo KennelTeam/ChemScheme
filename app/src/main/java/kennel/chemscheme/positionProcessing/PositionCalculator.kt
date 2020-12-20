@@ -1,5 +1,6 @@
 package kennel.chemscheme.positionProcessing
 
+import android.util.Log
 import kennel.chemscheme.structure.MolStruct.*
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -215,6 +216,7 @@ class PositionCalculator {
 
                 for (atom in atoms3d){
                     atom.position = atom.position * coefficient.toDouble()
+                    Log.i("test", "atom " + "${atom.position}")
                 }
             }
 
