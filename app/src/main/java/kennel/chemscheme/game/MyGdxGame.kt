@@ -103,7 +103,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     private fun addAtomToGraph() {
         // Создаем modelInstance и задаем положение ы пространстве
         val arg = argsQueue.removeAt(0) as Atom3D
-        val inst = ModelInstance(modeler.getModelForId(arg.atom.name))
+        val inst = ModelInstance(modeler.getModelForId(arg.type))
         inst.transform.set(arg.position.toGdx3vec(), Quaternion(0f, 0f, 0f, 0f))
 
         when(visualizationMode){
@@ -111,7 +111,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
             VisualizationMode.CLASSIC -> inst.transform.scale(constants.classicScale, constants.classicScale, constants.classicScale)
         }
 
-        if (arg.atom.name == AtomType.Hydrogen){
+        if (arg.type == AtomType.Hydrogen){
             inst.transform.scale(constants.hydrogenScale, constants.hydrogenScale, constants.hydrogenScale)
         }
 
@@ -127,16 +127,16 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
         instances.add(cInstance)*/
     }
 
-    private fun turnCamera(struct : Structure3D){
+    private fun turnCamera(struct : MolStruct){
         var minPos : Vector3 = Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE).power(2f)
         var maxPos : Vector3 = Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE).power(2f)
 
         //var middle = Vector3.Zero
 
-        struct.vertices.forEach {
+        struct.allAtoms.forEach {
             //middle = middle + it.position.toGdx3vec().power(2f)
-            minPos = min(minPos, it.position.toGdx3vec())
-            maxPos = max(maxPos, it.position.toGdx3vec())
+            minPos = min(minPos, (it as Atom3D).position.toGdx3vec())
+            maxPos = max(maxPos, (it as Atom3D).position.toGdx3vec())
         }
 
         var size = 2f * max(maxPos.x - minPos.x, maxPos.y - minPos.y) / 2
@@ -159,11 +159,11 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     }
 
     // Тута создаются все модельки, чтение данных из Structure3D (шок, не правда ли)
-    fun createFromArray(data: Structure3D) {
+    fun createFromArray(data: MolStruct) {
         Log.i("test", "createFromArray")
         turnCamera(data)
-        data.vertices.forEach {
-            argsQueue.add(it)
+        data.allAtoms.forEach {
+            argsQueue.add(it as Atom3D)
             // А тута создаются атомы
             funQueue.add { addAtomToGraph() }
         }
@@ -351,18 +351,18 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     }
 
     // Получить соединения всех атомов друг с другом - возврщается список (атом, атом) соединеий
-    private fun getConnections(atoms: Structure3D): List<List<Atom3D>> {
+    private fun getConnections(atoms: MolStruct): List<List<Atom3D>> {
         val res = mutableListOf<List<Atom3D>>()
 
-        atoms.vertices.forEach {
-            val first = it
-            it.atom.links.forEach { secondId ->
-                val conn = listOf(first, atoms.vertices[secondId])
+        atoms.allAtoms.forEach {
+            val first = it as Atom3D
+            it.links.forEach { link ->
+                val conn = listOf(first, link.atom as Atom3D)
                 var exists = false
                 res.forEach { inRes ->
                     if (inRes.kennelEquals(conn)) exists = true
                 }
-                if (!exists && first != atoms.vertices[secondId]) {
+                if (!exists && first.equals(link.atom)) {
                     res.add(conn)
                 }
             }

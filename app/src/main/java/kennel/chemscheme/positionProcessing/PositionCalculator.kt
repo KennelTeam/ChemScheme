@@ -176,7 +176,7 @@ class PositionCalculator {
         }
 
         // Функция, которую надо вызывать. Рассчитывает для данной молекулы ее 3d позиции
-        fun calculatePositions(structure : MolStruct) : Structure3D {
+        fun calculatePositions(structure : MolStruct) : MolStruct {
             for (atom in structure.allAtoms){
                 structure.replace(atom, Atom3D(atom))
             }
