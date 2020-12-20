@@ -14,6 +14,11 @@ open class BaseAtom {
         _links = mutableListOf(AtomLink(linkedTo, linkSight))
     }
 
+    constructor() {
+        this.type = AtomType.None
+        _links = mutableListOf()
+    }
+
     constructor(type: AtomType) {
         this.type = type
         _links = mutableListOf()
@@ -38,6 +43,7 @@ open class BaseAtom {
 class SightsAtom: BaseAtom {
     constructor(type: AtomType, linkedTo: SightsAtom, linkSight: ConnSight) : super(type, linkedTo, linkSight)
     constructor(type: AtomType, links: List<AtomLink>) : super(type, links)
+    constructor(baseAtom: BaseAtom): super(baseAtom.type, baseAtom.links)
 
     private val curConnections = links
     val availableSights: List<ConnSight>

@@ -7,7 +7,8 @@ enum class AtomType {
     Chlorum,
     Bromium,
     Iodine,
-    Fluorine
+    Fluorine,
+    None
 }
 
 object ConnSightsGroups {

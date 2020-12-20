@@ -16,11 +16,11 @@ class MolStruct {
 
     fun add(
         type: AtomType,
-        connection: SightsAtom,
+        connection: BaseAtom,
         sightNewAtom: ConnSight,
         sightParent: ConnSight
     ) {
-        if (sightParent in connection.availableSights) {
+        if (sightParent in SightsAtom(connection).availableSights) {
             val atom = BaseAtom(type, connection, sightNewAtom)
             connection.addNeighbour(atom, sightParent)
             _allAtoms.add(atom)

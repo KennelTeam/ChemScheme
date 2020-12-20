@@ -2,6 +2,8 @@ package kennel.chemscheme
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kennel.chemscheme.structure.AtomType
+import kennel.chemscheme.structure.ConnSight
 import kennel.chemscheme.structure.MolStruct
 
 import org.junit.Test
@@ -19,6 +21,7 @@ import org.junit.Before
 class TestAvailableSights {
     @Test
     fun test1() {
-        //val struct =
+        val struct = MolStruct()
+        struct.add(AtomType.Carbon, struct.allAtoms[0], ConnSight.North, ConnSight.South)
     }
 }
