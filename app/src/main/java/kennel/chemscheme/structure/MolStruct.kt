@@ -20,7 +20,7 @@ class MolStruct {
         sightNewAtom: ConnSight,
         sightParent: ConnSight
     ) {
-        if (sightParent in SightsAtom(connection).availableSights) {
+        if (sightParent in SightsAtom(connection).availableSights && sightNewAtom != sightParent) {
             val atom = BaseAtom(type, connection, sightNewAtom)
             connection.addNeighbour(atom, sightParent)
             _allAtoms.add(atom)
@@ -42,6 +42,10 @@ class MolStruct {
             }
         }
         return res
+    }
+
+    fun replace(whom: BaseAtom, dest: BaseAtom) {
+        _allAtoms[_allAtoms.indexOf(whom)] = BaseAtom(dest.type, whom.links)
     }
 
     companion object {

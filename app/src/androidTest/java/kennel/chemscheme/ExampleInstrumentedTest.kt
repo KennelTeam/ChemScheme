@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import kennel.chemscheme.structure.AtomType
 import kennel.chemscheme.structure.ConnSight
 import kennel.chemscheme.structure.MolStruct
+import kennel.chemscheme.structure.SightsAtom
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,6 +23,8 @@ class TestAvailableSights {
     @Test
     fun test1() {
         val struct = MolStruct()
-        struct.add(AtomType.Carbon, struct.allAtoms[0], ConnSight.North, ConnSight.South)
+        struct.add(AtomType.Carbon, struct.allAtoms[0], sightParent =  ConnSight.NorthWest, sightNewAtom = ConnSight.NorthEast)
+        val satom = SightsAtom(struct.allAtoms[1])
+        assertEquals(satom.availableSights.toSet(), setOf(ConnSight.NorthWest, ConnSight.South))
     }
 }

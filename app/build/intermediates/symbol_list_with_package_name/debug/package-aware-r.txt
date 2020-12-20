@@ -1850,6 +1850,8 @@ id line3
 id linear
 id listMode
 id list_item
+id mainImageView
+id mainLayout
 id masked
 id media_actions
 id message
