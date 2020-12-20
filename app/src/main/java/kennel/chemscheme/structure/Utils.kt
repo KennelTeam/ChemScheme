@@ -1,7 +1,13 @@
 package kennel.chemscheme.structure
 
 enum class AtomType {
-    C, H, O, Cl, Br, I, F
+    Carbon,
+    Hydrogen,
+    Oxygen,
+    Chlorum,
+    Bromium,
+    Iodine,
+    Fluorine
 }
 
 object ConnSightsGroups {
