@@ -34,6 +34,16 @@ class MolStruct {
         _allAtoms.remove(atom)
     }
 
+    fun getByType(type: AtomType): List<BaseAtom> {
+        val res = mutableListOf<BaseAtom>()
+        allAtoms.forEach {
+            if (it.type == type) {
+                res.add(it)
+            }
+        }
+        return res
+    }
+
     companion object {
         fun loadFromFile(context: Context, path: String): BaseAtom {
             return Json.decodeFromString(File(context.filesDir, path).readText())
