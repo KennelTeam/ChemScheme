@@ -61,7 +61,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     private var curDeltaTime = 0f
     private val targetDelta = 0.02f
     private val MAX_NUMBER_OF_POINTS = 20
-    private val visualizationMode : VisualizationMode = VisualizationMode.ZHELUD
+    private val visualizationMode : VisualizationMode = VisualizationMode.CLASSIC
 
     private object constants {
         val zheludScale = 1.5f
@@ -186,7 +186,8 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
                 var perpendicular = (direction * Vector(0.0, 0.0, 1.0)) * direction
 
                 //Хз, что делает это условие, но оно исправляет баг
-                if(direction.y < 0 && abs(direction.z) > abs(direction.y)){
+                if(direction.y < 0 && abs(direction.z) > 0){
+                    Log.i("direction", "$direction")
                     perpendicular = perpendicular * -1.0
                 }
 
