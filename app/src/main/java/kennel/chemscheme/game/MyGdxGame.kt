@@ -14,10 +14,10 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
 import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
-import kennel.chemscheme.BuildConfig
 import kennel.chemscheme.positionProcessing.Atom3D
 import kennel.chemscheme.positionProcessing.Structure3D
 import kennel.chemscheme.positionProcessing.Vector
+import kennel.chemscheme.structure.AtomType
 import kennel.chemscheme.structure.MolStruct
 import kotlin.math.*
 
@@ -111,7 +111,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
             VisualizationMode.CLASSIC -> inst.transform.scale(constants.classicScale, constants.classicScale, constants.classicScale)
         }
 
-        if (arg.atom.name == MolStruct.Elements.H){
+        if (arg.atom.name == AtomType.Hydrogen){
             inst.transform.scale(constants.hydrogenScale, constants.hydrogenScale, constants.hydrogenScale)
         }
 
@@ -172,13 +172,6 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
             argsQueue.add(it)
             funQueue.add {
                 // Берем параметры из очереди аргументов
-                if (BuildConfig.DEBUG && !(argsQueue[0] is List<*>)) {
-                    error("argsQueue is not list")
-                }
-                if (BuildConfig.DEBUG && !((argsQueue[0] as List<*>)[0] is Atom3D)){
-                    error("argsQueue is not list of Atom3D")
-                }
-
                 val gotten = argsQueue.removeAt(0) as List<Atom3D>
 
                 var direction = gotten[0].position - gotten[1].position
@@ -313,36 +306,36 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
                             builder.createSphere(1f, 1f, 1f, 50, 50,
                                     Material(ColorAttribute.createDiffuse(Color.BLUE)),
                                     (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.C),
+                            AtomType.Carbon),
                     AtomModel(
                             builder.createSphere(1f, 1f, 1f, 50, 50,
                                     Material(ColorAttribute.createDiffuse(Color.RED)),
                                     (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.Cl),
+                            AtomType.Chlorum),
                     AtomModel(
                             builder.createSphere(1f, 1f, 1f, 50, 50,
                                     Material(ColorAttribute.createDiffuse(Color.BROWN)),
                                     (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.Br),
+                            AtomType.Bromium),
                     AtomModel(
                             builder.createSphere(1f, 1f, 1f, 50, 50,
                                     Material(ColorAttribute.createDiffuse(Color.CORAL)),
                                     (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.H),
+                            AtomType.Hydrogen),
                     AtomModel(
                             builder.createSphere(1f, 1f, 1f, 50, 50,
                                     Material(ColorAttribute.createDiffuse(Color.CYAN)),
                                     (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.F),
+                            AtomType.Fluorine),
                     AtomModel(
                             builder.createSphere(1f, 1f, 1f, 50, 50,
                                     Material(ColorAttribute.createDiffuse(Color.GOLD)),
                                     (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.I)
+                            AtomType.Iodine)
             )
         }
 
-        fun getModelForId(requestedId: MolStruct.Elements): Model {
+        fun getModelForId(requestedId: AtomType): Model {
             atomsModels.forEach {
                 if (it.id == requestedId) {
                     return@getModelForId it.model
@@ -353,7 +346,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
 
         data class AtomModel(
                 val model: Model,
-                val id: MolStruct.Elements,
+                val id: AtomType
         )
     }
 
