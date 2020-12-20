@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
 import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.math.collision.BoundingBox
 import kennel.chemscheme.positionProcessing.Atom3D
 import kennel.chemscheme.positionProcessing.Structure3D
 import kennel.chemscheme.positionProcessing.Vector
@@ -42,7 +43,7 @@ class MyGdxGame : ApplicationAdapter() {
     override fun create() {
         // Задаем свет
         env = Environment()
-        env.set(ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f))
+        env.set(ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 3f))
         addLights()
 
         modeler = Modeler()

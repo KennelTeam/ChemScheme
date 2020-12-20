@@ -1890,6 +1890,7 @@ id nav_3d
 id nav_controller_view_tag
 id nav_exit
 id nav_host_fragment_container
+id nav_view
 id navigation
 id navigation_header_container
 id never
