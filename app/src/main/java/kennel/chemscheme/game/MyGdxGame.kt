@@ -61,7 +61,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     private var curDeltaTime = 0f
     private val targetDelta = 0.02f
     private val MAX_NUMBER_OF_POINTS = 20
-    private val visualizationMode : VisualizationMode = VisualizationMode.CLASSIC
+    private val visualizationMode : VisualizationMode = VisualizationMode.ZHELUD
 
     private object constants {
         val zheludScale = 1.5f
@@ -182,33 +182,25 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
                 val gotten = argsQueue.removeAt(0) as List<Atom3D>
 
                 var direction = gotten[0].position - gotten[1].position
+
                 var perpendicular = (direction * Vector(0.0, 0.0, 1.0)) * direction
 
-                //var perpendicular = Vector(-direction.y, direction.x, direction.z) * direction
+                //Хз, что делает это условие, но оно исправляет баг
+                if(direction.y < 0 && abs(direction.z) > abs(direction.y)){
+                    perpendicular = perpendicular * -1.0
+                }
+
                 val builder = ModelBuilder()
                 var c = builder.createCylinder(0.1f, direction.magnitude().toFloat(), 0.1f, 20,
                     Material(ColorAttribute.createDiffuse(Color.GRAY)), (Usage.Position or Usage.Normal).toLong())
                 val cInstance = ModelInstance(c)
-                //cInstance.transform.setToLookAt((Vector(1.0, 0.0, 0.0)).toGdx3vec(), direction.toGdx3vec())
-                cInstance.transform.setToRotation(direction.toGdx3vec(), Vector3.Y);
+                cInstance.transform.setToLookAt(perpendicular.toGdx3vec(), direction.toGdx3vec())
+
                 cInstance.transform.set(((gotten[0].position + gotten[1].position) / 2.0).toGdx3vec(),
                     cInstance.transform.getRotation(Quaternion()))
 
-
-
-
                 instances.add(cInstance)
 
-                // Создаем линии
-                /*val modelBuilder = ModelBuilder()
-                modelBuilder.begin()
-                val builder = modelBuilder.part("line", 1, 3, Material())
-                builder.setColor(Color.RED)
-                builder.line(gotten[0].position.toGdx3vec(), gotten[1].position.toGdx3vec())
-                val lineModel = modelBuilder.end()
-                val lineInstance = ModelInstance(lineModel)
-                modeler.sticksModels.add(lineModel)
-                instances.add(lineInstance)*/
             }
         }
     }
