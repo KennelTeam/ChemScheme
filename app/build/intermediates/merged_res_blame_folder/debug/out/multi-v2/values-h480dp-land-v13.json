@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/nikolay/Documents/KOLYA/Прога/ChemScheme/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-h480dp-land-v13/values-h480dp-land-v13.xml",
+            "outputFile": "D:\\Dropbox\\Dropbox\\Nikita\\Programs_1\\Android\\ChemScheme\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-h480dp-land-v13\\values-h480dp-land-v13.xml",
             "map": [
                 {
-                    "source": "/home/nikolay/.gradle/caches/transforms-2/files-2.1/8c8143074b74a372c639e4d0caf0d922/material-1.2.1/res/values-h480dp-land-v13/values-h480dp-land-v13.xml",
+                    "source": "C:\\Users\\Andru\\.gradle\\caches\\transforms-2\\files-2.1\\8c8143074b74a372c639e4d0caf0d922\\material-1.2.1\\res\\values-h480dp-land-v13\\values-h480dp-land-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",

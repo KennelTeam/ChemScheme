@@ -68,7 +68,7 @@ class MyGdxGame : ApplicationAdapter() {
     }
 
     private fun addAtomToGraph() {
-        // Создаем modelInstance и задаем положение ы пространстве
+        // Создаем modelInstance и задаем положение в пространстве
         val arg = argsQueue.removeAt(0) as Atom3D
         val inst = ModelInstance(modeler.getModelForId(arg.atom.name))
         inst.transform.set(arg.position.toGdx3vec(), Quaternion(0f, 0f, 0f, 0f))

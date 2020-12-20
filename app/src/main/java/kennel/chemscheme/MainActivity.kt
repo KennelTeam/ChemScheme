@@ -23,6 +23,9 @@ import androidx.navigation.ui.setupWithNavController
 import kennel.chemscheme.mol3d.Mol3dFragment
 import kennel.chemscheme.mol3d.MolGdxFrag
 import kennel.chemscheme.structural_formula.StructuralFormulaFragment
+import kennel.chemscheme.MultipleInheritance.Composition
+import kennel.chemscheme.MultipleInheritance.SecondCringe
+
 
 class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
 
@@ -30,6 +33,13 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        var test = Composition()
+        test.doCringe()
+        test.doOtherCringe()
+        checkCringe(test)
+        checkOtherCringe(test)
+
         setContentView(R.layout.activity_main)
 //        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -50,6 +60,14 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
 //        } catch(e: Exception) {
 //            Log.i("test3d", "test failed")
 //        }
+    }
+
+    private fun checkCringe(f : kennel.chemscheme.MultipleInheritance.FirstCringe) {
+        Log.i("test", "checkingFirstCringe")
+    }
+
+    private fun checkOtherCringe(s : kennel.chemscheme.MultipleInheritance.SecondCringe){
+        Log.i("test", "checkingOtherCringe")
     }
 
     private fun onNavigationItemSelected(item: MenuItem): Boolean {
