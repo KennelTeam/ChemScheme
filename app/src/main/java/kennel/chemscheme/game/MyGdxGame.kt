@@ -181,16 +181,12 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
 
                 val gotten = argsQueue.removeAt(0) as List<Atom3D>
 
-                var direction = gotten[0].position - gotten[1].position
-                var perpendicular = (direction * Vector(0.0, 0.0, 1.0)) * direction
-
-                //var perpendicular = Vector(-direction.y, direction.x, direction.z) * direction
+                val direction = gotten[0].position - gotten[1].position
                 val builder = ModelBuilder()
-                var c = builder.createCylinder(0.1f, direction.magnitude().toFloat(), 0.1f, 20,
+                val c = builder.createCylinder(0.1f, direction.magnitude().toFloat(), 0.1f, 20,
                     Material(ColorAttribute.createDiffuse(Color.GRAY)), (Usage.Position or Usage.Normal).toLong())
                 val cInstance = ModelInstance(c)
-                //cInstance.transform.setToLookAt((Vector(1.0, 0.0, 0.0)).toGdx3vec(), direction.toGdx3vec())
-                cInstance.transform.setToRotation(direction.toGdx3vec(), Vector3.Y);
+                cInstance.transform.setToRotation((direction * Vector(0.0, 1.0, 0.0)).toGdx3vec(), -acos(direction.y / direction.magnitude()).toFloat() * 180f / Math.PI.toFloat())
                 cInstance.transform.set(((gotten[0].position + gotten[1].position) / 2.0).toGdx3vec(),
                     cInstance.transform.getRotation(Quaternion()))
 
