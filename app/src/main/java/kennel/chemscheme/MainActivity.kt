@@ -31,9 +31,25 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener { item: MenuItem -> onNavigationItemSelected(item) }
         changeFragment(startFragment)
+//        val navController = findNavController(R.id.nav_host_fragment)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+//        appBarConfiguration = AppBarConfiguration(setOf(
+//            R.id.nav_2d, R.id.nav_3d, R.id.nav_2d), drawerLayout)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+//        navView.setupWithNavController(navController)
+//        val lbf = MolGdxFrag()
+//        supportFragmentManager.beginTransaction().add(R.id.frag3dLayout, lbf).commit()
+//        try {
+//            test3d()
+//            Log.i("test3d", "test passed")
+//        } catch(e: Exception) {
+//            Log.i("test3d", "test failed")
+//        }
     }
 
     private fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -60,7 +76,44 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
         }
     }
 
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        menuInflater.inflate(R.menu.main, menu)
+//        return true
+//    }
+
+//    override fun onSupportNavigateUp(): Boolean {
+//        val navController = findNavController(R.id.nav_host_fragment)
+//        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+//    }
+
+    fun test3d(){
+        var struct : MolStruct.Structure = MolStruct.Structure()
+        struct.add(MolStruct.Elements.C, -1, 0)
+        struct.add(MolStruct.Elements.Br, 0, 0)
+        struct.add(MolStruct.Elements.H, 0, 1)
+        struct.add(MolStruct.Elements.Cl, 0, 2)
+
+        struct.add(MolStruct.Elements.C, 0, 3)
+
+        struct.add(MolStruct.Elements.C, 4, 1)
+
+        struct.add(MolStruct.Elements.F, 5, 1)
+        struct.add(MolStruct.Elements.Br, 5, 2)
+        struct.add(MolStruct.Elements.I, 5, 3)
+
+        struct.add(MolStruct.Elements.I, 4, 2)
+        struct.add(MolStruct.Elements.C, 4, 3)
+
+        struct.add(MolStruct.Elements.F, 10, 1)
+        struct.add(MolStruct.Elements.Br, 10, 2)
+        struct.add(MolStruct.Elements.I, 10, 3)
+
+        var struct3d = PositionCalculator.calculatePositions(struct)
+        struct3d.show()
+    }
+
     override fun exit() {
-        TODO("Это вроде как надо для норм работы libgdx, не удаляйте функцию пжпж")
+        TODO("Not yet implemented")
     }
 }
