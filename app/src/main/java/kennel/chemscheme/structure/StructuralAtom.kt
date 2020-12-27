@@ -24,7 +24,7 @@ open class StructuralAtom : BaseAtom {
         _conns = conns.toMutableSet()
         this.isChild = isChild
         if ((isChild && parent == null) || (!isChild && parent != null)) {
-            throw Exception("Bad parametrs of isChild and parent for creating atom with id $id")
+            throw Exception("Bad parametrs of isChild - $isChild and parent - $parent for creating atom with id $id")
         } else {
             this.structuralParent = parent
             if (isChild) {

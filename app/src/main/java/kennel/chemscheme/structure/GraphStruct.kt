@@ -14,9 +14,17 @@ class GraphStruct(startAtomType: AtomType = AtomType.Carbon) {
         parent: Sights2DAtom,
         sight: Int
     ) {
-        val newAtom = Sights2DAtom(IdGenerator.genNewId(), type)
+        val newAtom = Sights2DAtom(IdGenerator.genNewId(), type, parent = parent)
         parent.addChild(newAtom, sight)
         _allAtoms.add(newAtom)
+    }
+
+    fun atom(
+        type: AtomType,
+        parent: Sights2DAtom,
+        sight: Int
+    ) {
+        add(type, parent, sight)
     }
 
     fun remove(id: Int) {
@@ -37,6 +45,13 @@ class GraphStruct(startAtomType: AtomType = AtomType.Carbon) {
     }
 
     fun <T: StructuralAtom> toTyped(instruction: (StructuralAtom) -> T): List<T> {
-        return _allAtoms.map(instruction)
+        return _allAtoms.map{ it as StructuralAtom }.map(instruction)
     }
+
+}
+
+fun dslGraph(f: GraphStruct.() -> Unit): GraphStruct {
+    val res = GraphStruct()
+    res.f()
+    return res
 }
