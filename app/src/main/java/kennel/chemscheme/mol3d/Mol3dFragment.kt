@@ -38,6 +38,10 @@ class Mol3dFragment: Fragment() {
         gdx = gdxView.gdxGraph
         childFragmentManager.beginTransaction().add(R.id.frag3dLayout, gdxView).commit()
 
+        binding.VisModeButton.setOnClickListener {
+            gdxView.resetMode()
+        }
+
         return binding.root
     }
 }

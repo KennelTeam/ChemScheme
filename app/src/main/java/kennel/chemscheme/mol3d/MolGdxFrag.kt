@@ -6,8 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication
+import kennel.chemscheme.R
+import kennel.chemscheme.databinding.Mol3dFragmentBinding
 import kennel.chemscheme.game.MyGdxGame
+import kennel.chemscheme.game.VisualizationMode
 import kennel.chemscheme.positionProcessing.Atom3D
 import kennel.chemscheme.positionProcessing.PositionCalculator
 import kennel.chemscheme.positionProcessing.Structure3D
@@ -22,11 +26,16 @@ class MolGdxFrag: AndroidFragmentApplication() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val i = initializeForView(gdxGraph)
-
         return i
     }
 
     fun onGdxInitialized(){
+        gdxGraph.createFromArray(test3d())
+    }
+
+    fun resetMode(){
+        gdxGraph.clear()
+        gdxGraph.changeMode()
         gdxGraph.createFromArray(test3d())
     }
 

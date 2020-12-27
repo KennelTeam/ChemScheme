@@ -40,7 +40,11 @@ fun max(a : Vector3, b : Vector3) : Vector3{
 }
 
 enum class VisualizationMode {
-    ZHELUD, CLASSIC
+    ZHELUD, CLASSIC;
+    /*private val vals: Array<VisualizationMode> = values()
+    fun next() : VisualizationMode? {
+        return vals[(ordinal + 1) % vals.size]
+    }*/
 }
 
 //МЫ ПИШЕМ ИСТОРИЮ!!!!!!!!!111
@@ -61,12 +65,26 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     private var curDeltaTime = 0f
     private val targetDelta = 0.02f
     private val MAX_NUMBER_OF_POINTS = 20
-    private val visualizationMode : VisualizationMode = VisualizationMode.CLASSIC
+
+    private var isEditing = false
+    private var isRendering = false
+    private var visualizationMode : VisualizationMode = VisualizationMode.values()[0]
+
+    companion object {
+        val ATOM_PROPERTIES = hashMapOf<MolStruct.Elements, Pair<Float, Color>>(
+                MolStruct.Elements.C to Pair(1.0f, Color.BLACK),
+                MolStruct.Elements.H to Pair(0.5f, Color.WHITE),
+                MolStruct.Elements.I to Pair(1.6f, Color.PURPLE),
+                MolStruct.Elements.F to Pair(0.8f, Color.CYAN),
+                MolStruct.Elements.Br to Pair(1.2f, Color.BROWN),
+                MolStruct.Elements.Cl to Pair(1.0f, Color.GREEN),
+                MolStruct.Elements.O to Pair(1.0f, Color.CORAL)
+        )
+    }
 
     private object constants {
-        val zheludScale = 1.5f
+        val zheludScale = 1.4f
         val classicScale = 0.7f
-        val hydrogenScale = 0.5f
     }
 
     override fun create() {
@@ -100,6 +118,25 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
 
     }
 
+    fun clear(){
+        while (isRendering){
+            Thread.sleep(5)
+        }
+        isEditing = true
+        instances.clear()
+        camCtrl.reset()
+        isEditing = false
+        //funQueue.clear()
+        //argsQueue.clear()
+    }
+
+    fun changeMode(){
+        visualizationMode = when(visualizationMode){
+            VisualizationMode.ZHELUD -> VisualizationMode.CLASSIC
+            VisualizationMode.CLASSIC -> VisualizationMode.ZHELUD
+        }
+    }
+
     private fun addAtomToGraph() {
         // Создаем modelInstance и задаем положение ы пространстве
         val arg = argsQueue.removeAt(0) as Atom3D
@@ -111,20 +148,8 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
             VisualizationMode.CLASSIC -> inst.transform.scale(constants.classicScale, constants.classicScale, constants.classicScale)
         }
 
-        if (arg.atom.name == MolStruct.Elements.H){
-            inst.transform.scale(constants.hydrogenScale, constants.hydrogenScale, constants.hydrogenScale)
-        }
-
 
         instances.add(inst)
-    }
-
-    private fun genCylinder(){
-        /*val builder = ModelBuilder()
-        var c = builder.createCylinder(2f, 2f, 2f, 20,
-            Material(ColorAttribute.createDiffuse(Color.RED)), (Usage.Position or Usage.Normal).toLong())
-        val cInstance = ModelInstance(c)
-        instances.add(cInstance)*/
     }
 
     private fun turnCamera(struct : Structure3D){
@@ -151,6 +176,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
 
         //middle = (middle / (struct.vertices.size.toFloat())).power(0.5f)
 
+        camCtrl.reset()
         cam.lookAt(center)
         camCtrl.target = center
         cam.update()
@@ -160,7 +186,10 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
 
     // Тута создаются все модельки, чтение данных из Structure3D (шок, не правда ли)
     fun createFromArray(data: Structure3D) {
-        Log.i("test", "createFromArray")
+        while (isRendering){
+            Thread.sleep(5)
+        }
+        isEditing = true
         turnCamera(data)
         data.vertices.forEach {
             argsQueue.add(it)
@@ -207,6 +236,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
                 instances.add(lineInstance)*/
             }
         }
+        isEditing = false
     }
 
     // Здеся попытка перемещения камеры при ведении двумя пальцами,
@@ -262,20 +292,13 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     // поэтому есть переменные funQueue и funArgs, куда добавляются функции, которые потом исполняются
     // во время рендера
     override fun render() {
-        genCylinder()
-        //curDeltaTime += Gdx.graphics.deltaTime
-
-        /*if (curDeltaTime >= targetDelta) {
-            procFingersTouches()
-            curDeltaTime -= targetDelta
-        }*/
-
+        if(isEditing){
+            return
+        }
+        isRendering = true
         funQueue.forEach { it.invoke() }
         funQueue.clear()
         argsQueue.clear()
-
-        //lastCamPos = cam.position.toKennelVec()
-
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.width, Gdx.graphics.height)
         Gdx.gl.glClearColor(1f, 1f, 1f, 1f)
@@ -285,6 +308,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
         instances.forEach { batch.render(it, env) }
         camCtrl.update()
         batch.end()
+        isRendering = false
     }
 
     override fun dispose() {
@@ -304,38 +328,15 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
                     Material(ColorAttribute.createDiffuse(Color.GREEN)),
                     (Usage.Position or Usage.Normal).toLong())
 
-            atomsModels = listOf(
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.BLACK)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.C),
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.GREEN)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.Cl),
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.BROWN)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.Br),
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.WHITE)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.H),
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.CYAN)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.F),
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.PURPLE)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            MolStruct.Elements.I)
-            )
+            atomsModels = mutableListOf()
+
+            ATOM_PROPERTIES.forEach{
+                val am = AtomModel(builder.createSphere(it.value.first, it.value.first, it.value.first, 50, 50,
+                        Material(ColorAttribute.createDiffuse(it.value.second)),
+                        (Usage.Position or Usage.Normal).toLong()),
+                        it.key)
+                atomsModels += am
+            }
         }
 
         fun getModelForId(requestedId: MolStruct.Elements): Model {
