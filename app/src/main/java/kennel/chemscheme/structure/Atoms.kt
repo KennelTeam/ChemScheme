@@ -1,76 +1,84 @@
 package kennel.chemscheme.structure
 
-class AtomLink(val atom: BaseAtom, val connType: ConnSight)
+class Atom2DLink(val atom: Sights2DAtom, val connType: Int)
 
 open class BaseAtom {
-    private val _links: MutableList<AtomLink>
-    val links: List<AtomLink>
-        get() = _links
-
-    val type: AtomType
-
-    constructor(type: AtomType, linkedTo: BaseAtom, linkSight: ConnSight) {
+    var type: AtomType
+    val id: Int
+    constructor(id: Int, type: AtomType) {
+        this.id = id
         this.type = type
-        _links = mutableListOf(AtomLink(linkedTo, linkSight))
     }
 
     constructor() {
+        id = Int.MIN_VALUE
         this.type = AtomType.None
-        _links = mutableListOf()
-    }
-
-    constructor(type: AtomType) {
-        this.type = type
-        _links = mutableListOf()
-    }
-
-    constructor(type: AtomType, links: List<AtomLink>) {
-        this.type = type
-        this._links = links.toMutableList()
-    }
-
-    fun addNeighbour(neighbour: BaseAtom, sight: ConnSight) { _links.add(AtomLink(neighbour, sight)) }
-    fun removeNighbour(neighbour: BaseAtom) { _links.remove(findLink(neighbour)) }
-
-    protected fun findLink(atom: BaseAtom): AtomLink? {
-        _links.forEach {
-            if (it.atom == atom) return it
-        }
-        return null
     }
 }
 
-class SightsAtom: BaseAtom {
-    constructor(type: AtomType, linkedTo: SightsAtom, linkSight: ConnSight) : super(type, linkedTo, linkSight)
-    constructor(type: AtomType, links: List<AtomLink>) : super(type, links)
-    constructor(baseAtom: BaseAtom): super(baseAtom.type, baseAtom.links)
+class Sights2DAtom: BaseAtom {
+    private val _links: MutableList<Atom2DLink>
+    val links: List<Atom2DLink>
+        get() = _links
 
-    private val curConnections = links
-    val availableSights: List<ConnSight>
+    val availableSights: Set<Int>
         get() = countAvailableSights()
 
-    private fun countAvailableSights(): List<ConnSight> {
-        val available: List<ConnSight>
-        available = when {
-            curConnections.size in 1..2 -> {
-                val pa: MutableSet<ConnSight> =
-                    if (curConnections[0].connType in ConnSightsGroups.DIAL) {
-                        ConnSightsGroups.DIAL.toMutableSet()
-                    } else {
-                        ConnSightsGroups.DELTA_DIAL.toMutableSet()
-                    }
-                curConnections.forEach { pa.remove(it) }
-                pa.toList()
-            }
-            curConnections.isEmpty() -> {
-                ConnSightsGroups.DIAL.toList() + ConnSightsGroups.DELTA_DIAL.toList()
-            }
-            else -> {
-                listOf()
-            }
+    val parent: Sights2DAtom?
+
+    private val isChild: Boolean
+
+    constructor(id: Int, type: AtomType, isChild: Boolean = true, parent: Sights2DAtom? = null, links: List<Atom2DLink> = listOf()) : super(id, type) {
+        _links = links.toMutableList()
+        this.isChild = isChild
+        if ((isChild == true && parent == null) || (isChild == false && parent != null)) {
+            throw Exception("Bad parametrs of isChild and parent for creating atom with id $id")
+        } else {
+            this.parent = parent
         }
-        return available
     }
 
-    fun BaseAtom.toSightsAtom(): SightsAtom = SightsAtom(type, links)
+    private fun countAvailableSights(): Set<Int> {
+        when (links.size) {
+            3 -> return setOf(3, 4, 5)
+            in 0..2 -> {
+                val res = mutableSetOf<Int>()
+                val avai = if (isChild) setOf(1, 2)
+                        else setOf(0, 1, 2)
+                avai.forEach { av ->
+                    var good = true
+                    links.forEach { link -> if (av == link.connType) good = false }
+                    if (good) res.add(av)
+                }
+                return res
+            }
+            else -> return emptySet()
+        }
+    }
+
+    fun addChild(child: Sights2DAtom, sight: Int) {
+        if (sight in availableSights) {
+            _links.add(Atom2DLink(child, sight))
+        } else {
+            throw Exception("Sight $sight of atom with id $id is already occupied")
+        }
+    }
+
+    fun removeChild(id: Int) {
+        val link = findLinkById(id)
+        if (link != null) {
+            _links.remove(findLinkById(id))
+        } else {
+            throw Exception("No atom with id $id is connected to atom with id ${this.id}")
+        }
+    }
+
+    protected fun findLinkById(id: Int): Atom2DLink? {
+        _links.forEach {
+            if (it.atom.id == id) return it
+        }
+        return null
+    }
+
+    fun BaseAtom.toSightsAtom() = Sights2DAtom(id, type, links = links)
 }

@@ -18,13 +18,3 @@ import org.junit.Before
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-@RunWith(AndroidJUnit4::class)
-class TestAvailableSights {
-    @Test
-    fun test1() {
-        val struct = MolStruct()
-        struct.add(AtomType.Carbon, struct.allAtoms[0], sightParent =  ConnSight.NorthWest, sightNewAtom = ConnSight.NorthEast)
-        val satom = SightsAtom(struct.allAtoms[1])
-        assertEquals(satom.availableSights.toSet(), setOf(ConnSight.NorthWest, ConnSight.South))
-    }
-}

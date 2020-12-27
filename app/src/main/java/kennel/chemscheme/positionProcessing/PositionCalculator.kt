@@ -1,8 +1,7 @@
 package kennel.chemscheme.positionProcessing
 
 import android.util.Log
-import com.badlogic.gdx.utils.compression.lzma.Base
-import kennel.chemscheme.structure.AtomLink
+import kennel.chemscheme.structure.Atom2DLink
 import kennel.chemscheme.structure.BaseAtom
 import kennel.chemscheme.structure.MolStruct
 import kennel.chemscheme.structure.AtomType
@@ -20,7 +19,7 @@ class PositionCalculator {
             for (carbon : BaseAtom in graph.getByType(AtomType.Carbon)){
                 //Считаем, сколько у него соседей-углеродов
                 var carbonsFound = 0
-                for (link : AtomLink in carbon.links){
+                for (link : Atom2DLink in carbon.links){
                     if(link.atom.type == AtomType.Carbon){
                         carbonsFound++
                     }
@@ -44,7 +43,7 @@ class PositionCalculator {
             alreadyVisited.add(vertex)
             result.add(vertex)
             //Идем по всем соседям этого атома
-            for (link : AtomLink in vertex.links){
+            for (link : Atom2DLink in vertex.links){
                 //которые при этом мы еще не рассмотрели
                 if(!alreadyVisited.contains(link.atom)){
                     //аналогично выполняем функцию для этого соседа
@@ -129,7 +128,7 @@ class PositionCalculator {
 
                 //Теперь идем по всем остальным атомам, которые соединены с i-м атомом цепочки,
                 //но не включены в цепочку
-                for (atomLink : AtomLink in sequence[index].links){
+                for (atomLink : Atom2DLink in sequence[index].links){
                     //Отбросим все, которые включены в цепочку
                     var inSequence : Boolean = false
                     for (atom : Atom3D in sequence){
@@ -186,7 +185,7 @@ class PositionCalculator {
             var theLongestCarbonSequence = mutableListOf<Atom3D>()
             for (v : BaseAtom in isolated){
                 //Такая цепочка точно должна начинаться с атома, который соединен с одноричным углеродом
-                for (link : AtomLink in v.links){
+                for (link : Atom2DLink in v.links){
                     if(link.atom.type != AtomType.Carbon){
                         //Для каждого такого атома запустим алгоритм поиска самой длинной цепочки
                         val longSequence = getLongestCarbon(structure, link.atom as Atom3D, mutableSetOf())

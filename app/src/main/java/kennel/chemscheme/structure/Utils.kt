@@ -10,17 +10,3 @@ enum class AtomType {
     Fluorine,
     None
 }
-
-object ConnSightsGroups {
-    val DIAL: Set<ConnSight> = setOf(ConnSight.North, ConnSight.SouthEast, ConnSight.SouthWest)
-    val DELTA_DIAL: Set<ConnSight> = setOf(ConnSight.South, ConnSight.NorthEast, ConnSight.NorthWest)
-}
-
-enum class ConnSight {
-    North,
-    SouthWest,
-    SouthEast,
-    South,
-    NorthWest,
-    NorthEast
-}

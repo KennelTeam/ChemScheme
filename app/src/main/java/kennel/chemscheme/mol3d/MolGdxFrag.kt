@@ -28,33 +28,33 @@ class MolGdxFrag: AndroidFragmentApplication() {
     }
 
     fun onGdxInitialized(){
-        gdxGraph.createFromArray(test3d())
+      //  gdxGraph.createFromArray(test3d())
     }
 
 
-    fun test3d(): MolStruct{
-        val struct : MolStruct = MolStruct()
-        struct.add(MolStruct.Elements.Br, 0, 0)
-        struct.add(MolStruct.Elements.H, 0, 1)
-        struct.add(MolStruct.Elements.Cl, 0, 2)
-
-        struct.add(MolStruct.Elements.C, 0, 3)
-
-        struct.add(MolStruct.Elements.C, 4, 1)
-
-        struct.add(MolStruct.Elements.F, 5, 1)
-        struct.add(MolStruct.Elements.Br, 5, 2)
-        struct.add(MolStruct.Elements.I, 5, 3)
-
-        struct.add(MolStruct.Elements.I, 4, 2)
-        struct.add(MolStruct.Elements.C, 4, 3)
-
-        struct.add(MolStruct.Elements.F, 10, 1)
-        struct.add(MolStruct.Elements.Br, 10, 2)
-        struct.add(MolStruct.Elements.I, 10, 3)
-
-        return PositionCalculator.calculatePositions(struct)
-    }
+//    fun test3d(): MolStruct{
+//        val struct : MolStruct = MolStruct()
+//        struct.add(MolStruct.Elements.Br, 0, 0)
+//        struct.add(MolStruct.Elements.H, 0, 1)
+//        struct.add(MolStruct.Elements.Cl, 0, 2)
+//
+//        struct.add(MolStruct.Elements.C, 0, 3)
+//
+//        struct.add(MolStruct.Elements.C, 4, 1)
+//
+//        struct.add(MolStruct.Elements.F, 5, 1)
+//        struct.add(MolStruct.Elements.Br, 5, 2)
+//        struct.add(MolStruct.Elements.I, 5, 3)
+//
+//        struct.add(MolStruct.Elements.I, 4, 2)
+//        struct.add(MolStruct.Elements.C, 4, 3)
+//
+//        struct.add(MolStruct.Elements.F, 10, 1)
+//        struct.add(MolStruct.Elements.Br, 10, 2)
+//        struct.add(MolStruct.Elements.I, 10, 3)
+//
+//        return PositionCalculator.calculatePositions(struct)
+//    }
 }
 
 //Structure3D(mutableListOf(Atom3D(MolStruct.Atom(MolStruct.Elements.C, arrayOf(10)))))
