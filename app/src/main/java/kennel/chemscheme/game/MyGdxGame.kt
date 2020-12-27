@@ -66,11 +66,16 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     private val targetDelta = 0.02f
     private val MAX_NUMBER_OF_POINTS = 20
 
+    //Переменные, чтобы не пересекаться разным потокам при редактировании и чтении instances
     private var isEditing = false
     private var isRendering = false
-    private var visualizationMode : VisualizationMode = VisualizationMode.values()[0]
+
+    //Режим отображения молекулы
+    private var visualizationMode : VisualizationMode = VisualizationMode.CLASSIC
 
     companion object {
+        //Параметры каждого атома. Ключи - тип атома, значения:
+        //first - размер относительно углерода, second - цвет
         val ATOM_PROPERTIES = hashMapOf<MolStruct.Elements, Pair<Float, Color>>(
                 MolStruct.Elements.C to Pair(1.0f, Color.BLACK),
                 MolStruct.Elements.H to Pair(0.5f, Color.WHITE),
@@ -82,8 +87,11 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
         )
     }
 
+    //Полезные константы для визуализации
     private object constants {
+        //Размер углерода в режиме желужя
         val zheludScale = 1.4f
+        //Размер углерода в классическом режиме
         val classicScale = 0.7f
     }
 
@@ -118,29 +126,27 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
 
     }
 
+    //Функция, которая 'начинает все с начала'. Обнуляет сцену и камеру
     fun clear(){
+        //Если в это время выполняется рендеринг, то ждем его завершения
         while (isRendering){
             Thread.sleep(5)
         }
+        //Обозначаем, что мы начали работу с instances
         isEditing = true
         instances.clear()
-        // Создаем камеру
+        // Пересоздаем камеру
         cam = PerspectiveCamera(67f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-        //cam.position.set(1f, 1f, 1f)
-        //cam.lookAt(0f, 0f, 0f)
+
         cam.near = 1f
         cam.far = 300f
         cam.update()
-
-        // А ето, чтобы камеру можно было двигать, но тут есть не все фичи
-        // и камеру можно перемещать не по всем направлениям :((
         camCtrl = CameraInputController(cam)
         Gdx.input.inputProcessor = camCtrl
         isEditing = false
-        //funQueue.clear()
-        //argsQueue.clear()
     }
 
+    //Смена режима отображения
     fun changeMode(){
         visualizationMode = when(visualizationMode){
             VisualizationMode.ZHELUD -> VisualizationMode.CLASSIC
@@ -148,6 +154,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
         }
     }
 
+    //Рисование одного атома
     private fun addAtomToGraph() {
         // Создаем modelInstance и задаем положение ы пространстве
         val arg = argsQueue.removeAt(0) as Atom3D
@@ -158,16 +165,14 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
             VisualizationMode.ZHELUD -> inst.transform.scale(constants.zheludScale, constants.zheludScale, constants.zheludScale)
             VisualizationMode.CLASSIC -> inst.transform.scale(constants.classicScale, constants.classicScale, constants.classicScale)
         }
-
-
         instances.add(inst)
     }
 
+    //Поворот камеры при создании структуры
     private fun turnCamera(struct : Structure3D){
+        //Находим параллелепипед, в который можно вписать молекулу
         var minPos : Vector3 = Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE).power(2f)
         var maxPos : Vector3 = Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE).power(2f)
-
-        //var middle = Vector3.Zero
 
         struct.vertices.forEach {
             //middle = middle + it.position.toGdx3vec().power(2f)
@@ -175,6 +180,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
             maxPos = max(maxPos, it.position.toGdx3vec())
         }
 
+        //Находим подходящее расстояние от центра молекулы
         var size = 2f * max(maxPos.x - minPos.x, maxPos.y - minPos.y) / 2
         var alpha = 33.5f * Math.PI / 180
         var distance = size * cos(alpha) / sin(alpha)
@@ -183,16 +189,14 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
         Log.i("test", "$maxPos")
         Log.i("test", "$minPos")
 
+        //Центром молекулы считаем центр того параллелепипеда
         val center = (minPos + maxPos) / 2f
 
-        //middle = (middle / (struct.vertices.size.toFloat())).power(0.5f)
-
+        //Переназначаем все параметры камеры и контроллера
         camCtrl.reset()
         cam.lookAt(center)
         camCtrl.target = center
         cam.update()
-        //Log.i("test", "middle " + "$middle")
-        //Log.i("test", "$center")
     }
 
     // Тута создаются все модельки, чтение данных из Structure3D (шок, не правда ли)
