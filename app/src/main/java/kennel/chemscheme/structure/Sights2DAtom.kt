@@ -16,8 +16,7 @@ class Sights2DAtom : StructuralAtom {
         isChild: Boolean = true,
         parent: Sights2DAtom? = null,
         links: List<Atom2DLink> = listOf()
-    )
-            : super(id, type, isChild, parent, links.map { it.atom }.toSet()) {
+    ) : super(id, type, isChild, parent, links.map { it.atom }.toSet()) {
 
         _links = links.toMutableList()
         if (isChild) {
@@ -26,18 +25,22 @@ class Sights2DAtom : StructuralAtom {
     }
 
     fun countAvailableSights(): Set<Int> {
-        when (links.size) {
-            3 -> return setOf(3, 4, 5)
-            in 0..2 -> {
-                val res = mutableSetOf<Int>()
-                setOf(0, 1, 2).forEach { av ->
-                    var good = true
-                    links.forEach { link -> if (av == link.connType) good = false }
-                    if (good) res.add(av)
+        return if (type == AtomType.Carbon) {
+            when (links.size) {
+                3 -> setOf(3, 4, 5)
+                in 0..2 -> {
+                    val res = mutableSetOf<Int>()
+                    setOf(0, 1, 2).forEach { av ->
+                        var good = true
+                        links.forEach { link -> if (av == link.connType) good = false }
+                        if (good) res.add(av)
+                    }
+                    res
                 }
-                return res
+                else -> emptySet()
             }
-            else -> return emptySet()
+        } else {
+            emptySet()
         }
     }
 
@@ -60,7 +63,7 @@ class Sights2DAtom : StructuralAtom {
         }
     }
 
-    protected fun findLinkById(id: Int): Atom2DLink? {
+    fun findLinkById(id: Int): Atom2DLink? {
         _links.forEach {
             if (it.atom.id == id) return it
         }
