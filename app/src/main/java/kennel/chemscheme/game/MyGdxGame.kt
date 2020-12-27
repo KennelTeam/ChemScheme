@@ -124,7 +124,18 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
         }
         isEditing = true
         instances.clear()
-        camCtrl.reset()
+        // Создаем камеру
+        cam = PerspectiveCamera(67f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
+        //cam.position.set(1f, 1f, 1f)
+        //cam.lookAt(0f, 0f, 0f)
+        cam.near = 1f
+        cam.far = 300f
+        cam.update()
+
+        // А ето, чтобы камеру можно было двигать, но тут есть не все фичи
+        // и камеру можно перемещать не по всем направлениям :((
+        camCtrl = CameraInputController(cam)
+        Gdx.input.inputProcessor = camCtrl
         isEditing = false
         //funQueue.clear()
         //argsQueue.clear()
