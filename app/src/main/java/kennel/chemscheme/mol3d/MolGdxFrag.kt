@@ -54,16 +54,16 @@ class MolGdxFrag: AndroidFragmentApplication() {
         struct.add(MolStruct.Elements.I, 10, 3)
 
         struct.add(MolStruct.Elements.C, 11, 1)
-        struct.add(MolStruct.Elements.C, 11, 2)
-        struct.add(MolStruct.Elements.H, 11, 3)
+        struct.add(MolStruct.Elements.H, 11, 2)
+        struct.add(MolStruct.Elements.C, 11, 3)
 
         struct.add(MolStruct.Elements.F, 14, 1)
         struct.add(MolStruct.Elements.H, 14, 2)
         struct.add(MolStruct.Elements.H, 14, 3)
 
-        struct.add(MolStruct.Elements.I, 15, 1)
-        struct.add(MolStruct.Elements.H, 15, 2)
-        struct.add(MolStruct.Elements.H, 15, 3)
+        struct.add(MolStruct.Elements.I, 16, 1)
+        struct.add(MolStruct.Elements.H, 16, 2)
+        struct.add(MolStruct.Elements.H, 16, 3)
 
         return PositionCalculator.calculatePositions(struct)
     }

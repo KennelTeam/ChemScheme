@@ -307,12 +307,12 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
             atomsModels = listOf(
                     AtomModel(
                             builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.BLUE)),
+                                    Material(ColorAttribute.createDiffuse(Color.BLACK)),
                                     (Usage.Position or Usage.Normal).toLong()),
                             MolStruct.Elements.C),
                     AtomModel(
                             builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.RED)),
+                                    Material(ColorAttribute.createDiffuse(Color.GREEN)),
                                     (Usage.Position or Usage.Normal).toLong()),
                             MolStruct.Elements.Cl),
                     AtomModel(
@@ -322,7 +322,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
                             MolStruct.Elements.Br),
                     AtomModel(
                             builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.CORAL)),
+                                    Material(ColorAttribute.createDiffuse(Color.WHITE)),
                                     (Usage.Position or Usage.Normal).toLong()),
                             MolStruct.Elements.H),
                     AtomModel(
@@ -332,7 +332,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
                             MolStruct.Elements.F),
                     AtomModel(
                             builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.GOLD)),
+                                    Material(ColorAttribute.createDiffuse(Color.PURPLE)),
                                     (Usage.Position or Usage.Normal).toLong()),
                             MolStruct.Elements.I)
             )
