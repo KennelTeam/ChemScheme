@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication
 import kennel.chemscheme.game.MyGdxGame
+import kennel.chemscheme.positionProcessing.Atom3D
 import kennel.chemscheme.positionProcessing.PositionCalculator
-import kennel.chemscheme.positionProcessing.Structure3D
 import kennel.chemscheme.structure.AtomType
 import kennel.chemscheme.structure.GraphStruct
 
@@ -34,7 +34,7 @@ class MolGdxFrag: AndroidFragmentApplication() {
         gdxGraph.createFromArray(test3d())
     }
 
-    fun test3d(): Structure3D{
+    fun test3d(): List<Atom3D> {
         val struct = GraphStruct()
 
         struct.add(AtomType.Bromium, struct.allAtoms[0], 0)
@@ -68,6 +68,6 @@ class MolGdxFrag: AndroidFragmentApplication() {
         struct.add(AtomType.Hydrogen, struct.allAtoms[16], 2)
         struct.add(AtomType.Hydrogen, struct.allAtoms[16], 3)
 
-        return PositionCalculator.calculatePositions(struct)
+        return PositionCalculator.calculatePositions(struct.toTyped { Atom3D(it) })
     }
 }
