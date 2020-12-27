@@ -97,7 +97,7 @@ class PositionCalculator {
         При том эти вектора - это направления атомов (типа они как раз задают зигзаг,
         который получается из этой формулы)
          */
-        private fun drawSequence(graph: MutableList<Atom3D>, sequence : MutableList<Atom3D>, right : Vector, left : Vector){
+        private fun drawSequence(graph: List<Atom3D>, sequence : MutableList<Atom3D>, right : Vector, left : Vector){
             //Итоговый массив с Atom3D
             //var result = mutableListOf<Atom3D>()
             //Позиция i-го атома (считаеся, что 0-й атом уже поставлен на нужное место и остальные
@@ -178,7 +178,7 @@ class PositionCalculator {
         }
 
         // Функция, которую надо вызывать. Рассчитывает для данной молекулы ее 3d позиции
-        fun calculatePositions(structure : MutableList<Atom3D>) {
+        fun calculatePositions(structure : List<Atom3D>) : List<Atom3D> {
             //Для начала найдем все углероды, которые ближе всего к "краю" молекулы
             val isolated = findAllIsolated(structure)
             //Будем искать самую длинную цепочку атомов во всей молекуле
@@ -228,7 +228,9 @@ class PositionCalculator {
                     Log.i("test", "atom " + "${atom.position}")
                 }
             }
+            return structure
         }
+
     }
 
 }
