@@ -6,11 +6,13 @@ open class StructuralAtom : BaseAtom {
         get() = _conns
 
     val muchFreeSpace: Int
-        get() = (4 - conns.size)
+        get() {
+            if(type == AtomType.Carbon) return (4 - conns.size)
+            else return 0
+        }
 
     val structuralParent: StructuralAtom?
-
-    protected val isChild: Boolean
+    val isChild: Boolean
 
     constructor(
         id: Int,
@@ -21,7 +23,7 @@ open class StructuralAtom : BaseAtom {
     ) : super(id, type) {
         _conns = conns.toMutableSet()
         this.isChild = isChild
-        if ((isChild == true && parent == null) || (isChild == false && parent != null)) {
+        if ((isChild && parent == null) || (!isChild && parent != null)) {
             throw Exception("Bad parametrs of isChild and parent for creating atom with id $id")
         } else {
             this.structuralParent = parent
