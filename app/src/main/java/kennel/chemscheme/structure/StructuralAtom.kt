@@ -34,8 +34,7 @@ open class StructuralAtom : BaseAtom {
     }
 
 
-    open fun addChild(vararg args: Any) {
-        val atom = args[0] as StructuralAtom
+    open fun addChild(atom: StructuralAtom, vararg args: Any) {
         if (muchFreeSpace > 0) {
             _conns.add(atom)
         } else {
