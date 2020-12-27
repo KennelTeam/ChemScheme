@@ -14,9 +14,6 @@ import kennel.chemscheme.game.MyGdxGame
 import kennel.chemscheme.game.VisualizationMode
 import kennel.chemscheme.positionProcessing.Atom3D
 import kennel.chemscheme.positionProcessing.PositionCalculator
-import kennel.chemscheme.positionProcessing.Structure3D
-import kennel.chemscheme.structure.AtomType
-import kennel.chemscheme.structure.MolStruct
 
 class MolGdxFrag: AndroidFragmentApplication() {
     //
@@ -40,7 +37,7 @@ class MolGdxFrag: AndroidFragmentApplication() {
         gdxGraph.createFromArray(test3d())
     }
 
-    fun test3d(): Structure3D{
+    fun test3d(): List<Atom3D> {
         val struct : MolStruct.Structure = MolStruct.Structure()
         struct.add(MolStruct.Elements.C, -1, 0)
         struct.add(MolStruct.Elements.Br, 0, 0)
@@ -77,5 +74,3 @@ class MolGdxFrag: AndroidFragmentApplication() {
         return PositionCalculator.calculatePositions(struct)
     }
 }
-
-//Structure3D(mutableListOf(Atom3D(MolStruct.Atom(MolStruct.Elements.C, arrayOf(10)))))

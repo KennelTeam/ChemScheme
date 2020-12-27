@@ -15,10 +15,9 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
 import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
 import kennel.chemscheme.positionProcessing.Atom3D
-import kennel.chemscheme.positionProcessing.Structure3D
 import kennel.chemscheme.positionProcessing.Vector
+import kennel.chemscheme.structural_formula.Atom
 import kennel.chemscheme.structure.AtomType
-import kennel.chemscheme.structure.MolStruct
 import kotlin.math.*
 
 operator fun Vector3.plus(other : Vector3) = Vector3(x + other.x, y + other.y, z + other.z)
@@ -76,14 +75,14 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     companion object {
         //Параметры каждого атома. Ключи - тип атома, значения:
         //first - размер относительно углерода, second - цвет
-        val ATOM_PROPERTIES = hashMapOf<MolStruct.Elements, Pair<Float, Color>>(
-                MolStruct.Elements.C to Pair(1.0f, Color.BLACK),
-                MolStruct.Elements.H to Pair(0.5f, Color.WHITE),
-                MolStruct.Elements.I to Pair(1.6f, Color.PURPLE),
-                MolStruct.Elements.F to Pair(0.8f, Color.CYAN),
-                MolStruct.Elements.Br to Pair(1.2f, Color.BROWN),
-                MolStruct.Elements.Cl to Pair(1.0f, Color.GREEN),
-                MolStruct.Elements.O to Pair(1.0f, Color.CORAL)
+        val ATOM_PROPERTIES = hashMapOf<AtomType, Pair<Float, Color>>(
+                AtomType.Carbon to Pair(1.0f, Color.BLACK),
+                AtomType.Hydrogen to Pair(0.5f, Color.WHITE),
+                AtomType.Iodine to Pair(1.6f, Color.PURPLE),
+                AtomType.Fluorine to Pair(0.8f, Color.CYAN),
+                AtomType.Bromium to Pair(1.2f, Color.BROWN),
+                AtomType.Chlorum to Pair(1.0f, Color.GREEN),
+                AtomType.Oxygen to Pair(1.0f, Color.CORAL)
         )
     }
 
@@ -169,12 +168,12 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     }
 
     //Поворот камеры при создании структуры
-    private fun turnCamera(struct : Structure3D){
+    private fun turnCamera(struct : List<Atom3D>){
         //Находим параллелепипед, в который можно вписать молекулу
         var minPos : Vector3 = Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE).power(2f)
         var maxPos : Vector3 = Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE).power(2f)
 
-        struct.vertices.forEach {
+        struct.forEach {
             //middle = middle + it.position.toGdx3vec().power(2f)
             minPos = min(minPos, (it as Atom3D).position.toGdx3vec())
             maxPos = max(maxPos, (it as Atom3D).position.toGdx3vec())
@@ -200,13 +199,13 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     }
 
     // Тута создаются все модельки, чтение данных из Structure3D (шок, не правда ли)
-    fun createFromArray(data: Structure3D) {
+    fun createFromArray(data: List<Atom3D>) {
         while (isRendering){
             Thread.sleep(5)
         }
         isEditing = true
         turnCamera(data)
-        data.allAtoms.forEach {
+        data.forEach {
             argsQueue.add(it as Atom3D)
             // А тута создаются атомы
             funQueue.add { addAtomToGraph() }
@@ -361,18 +360,18 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     }
 
     // Получить соединения всех атомов друг с другом - возврщается список (атом, атом) соединеий
-    private fun getConnections(atoms: MolStruct): List<List<Atom3D>> {
+    private fun getConnections(atoms: List<Atom3D>): List<List<Atom3D>> {
         val res = mutableListOf<List<Atom3D>>()
 
-        atoms.allAtoms.forEach {
+        atoms.forEach {
             val first = it as Atom3D
-            it.links.forEach { link ->
-                val conn = listOf(first, link.atom as Atom3D)
+            it.conns.forEach { link ->
+                val conn = listOf(first, link as Atom3D)
                 var exists = false
                 res.forEach { inRes ->
                     if (inRes.kennelEquals(conn)) exists = true
                 }
-                if (!exists && first.equals(link.atom)) {
+                if (!exists && first.id == link.id) {
                     res.add(conn)
                 }
             }
