@@ -5,7 +5,6 @@ import android.os.Bundle
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication
 
 import kennel.chemscheme.positionProcessing.*
-import kennel.chemscheme.structure.MolStruct
 import com.google.android.material.navigation.NavigationView
 import android.view.MenuItem
 import android.util.Log

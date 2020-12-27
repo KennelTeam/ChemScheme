@@ -3,9 +3,8 @@ package kennel.chemscheme.positionProcessing
 import android.util.Log
 import kennel.chemscheme.structure.Atom2DLink
 import kennel.chemscheme.structure.BaseAtom
-import kennel.chemscheme.structure.MolStruct
 import kennel.chemscheme.structure.AtomType
-import kennel.chemscheme.structure.MolStruct.*
+import kennel.chemscheme.structure.StructuralAtom
 import kotlin.math.min
 import kotlin.math.sqrt
 
@@ -13,20 +12,22 @@ import kotlin.math.sqrt
 class PositionCalculator {
     companion object {
         //Ищет все одноричные углероды. Используется при поиске самой длинной углеродной цепочки
-        private fun findAllIsolated(graph : MolStruct) : MutableList<Atom3D>{
+        private fun findAllIsolated(graph : List<StructuralAtom>) : MutableList<Atom3D>{
             var result = mutableListOf<Atom3D>()
             //Идем по всем углеродам
-            for (carbon : BaseAtom in graph.getByType(AtomType.Carbon)){
-                //Считаем, сколько у него соседей-углеродов
-                var carbonsFound = 0
-                for (link : Atom2DLink in carbon.links){
-                    if(link.atom.type == AtomType.Carbon){
-                        carbonsFound++
+            for (carbon : StructuralAtom in graph){
+                if(carbon.type == AtomType.Carbon) {
+                    //Считаем, сколько у него соседей-углеродов
+                    var carbonsFound = 0
+                    for (link: StructuralAtom in carbon.conns) {
+                        if (link.type == AtomType.Carbon) {
+                            carbonsFound++
+                        }
                     }
-                }
-                //Если мало, то добавляем в итоговый список
-                if(carbonsFound < 2){
-                    result.add(carbon as Atom3D)
+                    //Если мало, то добавляем в итоговый список
+                    if (carbonsFound < 2) {
+                        result.add(carbon as Atom3D)
+                    }
                 }
             }
 
@@ -38,16 +39,16 @@ class PositionCalculator {
         //graph - молекула, в которой ищем
         //vertex - атом, с которого должна начинаться цепочка
         //alreadyVisited - множество вершин, в которых мы уже побывали (их не надо проверять)
-        private fun getLongestCarbon(graph : MolStruct, vertex : Atom3D, alreadyVisited : MutableSet<Atom3D>) : MutableList<Atom3D>{
+        private fun getLongestCarbon(graph : List<StructuralAtom>, vertex : Atom3D, alreadyVisited : MutableSet<Atom3D>) : MutableList<Atom3D>{
             var result = mutableListOf<Atom3D>()
             alreadyVisited.add(vertex)
             result.add(vertex)
             //Идем по всем соседям этого атома
-            for (link : Atom2DLink in vertex.links){
+            for (link : StructuralAtom in vertex.conns){
                 //которые при этом мы еще не рассмотрели
-                if(!alreadyVisited.contains(link.atom)){
+                if(!alreadyVisited.contains(link)){
                     //аналогично выполняем функцию для этого соседа
-                    var variant = getLongestCarbon(graph, link.atom as Atom3D, alreadyVisited)
+                    var variant = getLongestCarbon(graph, link as Atom3D, alreadyVisited)
                     //Если полученная цепочка больше, чем то, что есть сейчас,
                     //то заменяем старую на полученную только что
                     if(variant.size + 1 > result.size){
@@ -96,7 +97,7 @@ class PositionCalculator {
         При том эти вектора - это направления атомов (типа они как раз задают зигзаг,
         который получается из этой формулы)
          */
-        private fun drawSequence(graph: MolStruct, sequence : MutableList<Atom3D>, right : Vector, left : Vector){
+        private fun drawSequence(graph: MutableList<Atom3D>, sequence : MutableList<Atom3D>, right : Vector, left : Vector){
             //Итоговый массив с Atom3D
             //var result = mutableListOf<Atom3D>()
             //Позиция i-го атома (считаеся, что 0-й атом уже поставлен на нужное место и остальные
@@ -130,11 +131,11 @@ class PositionCalculator {
 
                 //Теперь идем по всем остальным атомам, которые соединены с i-м атомом цепочки,
                 //но не включены в цепочку
-                for (atomLink : Atom2DLink in sequence[index].links){
+                for (atomLink : StructuralAtom in sequence[index].conns){
                     //Отбросим все, которые включены в цепочку
                     var inSequence : Boolean = false
                     for (atom : Atom3D in sequence){
-                        if(atom == atomLink.atom){
+                        if(atom.id == atomLink.id){
                             inSequence = true
                             break
                         }
@@ -146,16 +147,16 @@ class PositionCalculator {
                     var nextDirection : Vector = rotateVector(right, left, alreadyFound)
                     //В зависимости от того, первая это или вторая побочная цепочка, назовем ее ближней или дальней
                     if (alreadyFound){
-                        sequence[index].farIndex = atomLink
+                        sequence[index].farIndex = atomLink.id
                     } else{
-                        sequence[index].nearIndex = atomLink
+                        sequence[index].nearIndex = atomLink.id
                         alreadyFound = true
                     }
 
                     //Теперь подготовим все для рекурсивного запуска: создадим цепочку, по которой надо пройти
                     var nextSequence = mutableListOf<Atom3D>(sequence[index])
                     //Найдем самую длинную цепочку, отходящую от этого атома
-                    nextSequence.addAll(getLongestCarbon(graph, atomLink.atom as Atom3D, neighbours))
+                    nextSequence.addAll(getLongestCarbon(graph, atomLink as Atom3D, neighbours))
                     //Построим ее в виде 3d цепочки (вместо Atom поставим Atom3D)
                     var nextSequence3d = mutableListOf<Atom3D>()
                     nextSequence3d.add(sequence[index])
@@ -177,20 +178,17 @@ class PositionCalculator {
         }
 
         // Функция, которую надо вызывать. Рассчитывает для данной молекулы ее 3d позиции
-        fun calculatePositions(structure : MolStruct) : MolStruct {
-            for (atom in structure.allAtoms){
-                structure.replace(atom, Atom3D(atom))
-            }
+        fun calculatePositions(structure : MutableList<Atom3D>) {
             //Для начала найдем все углероды, которые ближе всего к "краю" молекулы
             val isolated = findAllIsolated(structure)
             //Будем искать самую длинную цепочку атомов во всей молекуле
             var theLongestCarbonSequence = mutableListOf<Atom3D>()
-            for (v : BaseAtom in isolated){
+            for (v : StructuralAtom in isolated){
                 //Такая цепочка точно должна начинаться с атома, который соединен с одноричным углеродом
-                for (link : Atom2DLink in v.links){
-                    if(link.atom.type != AtomType.Carbon){
+                for (link : StructuralAtom in v.conns){
+                    if(link.type != AtomType.Carbon){
                         //Для каждого такого атома запустим алгоритм поиска самой длинной цепочки
-                        val longSequence = getLongestCarbon(structure, link.atom as Atom3D, mutableSetOf())
+                        val longSequence = getLongestCarbon(structure, link as Atom3D, mutableSetOf())
                         //И если она длиннее, чем максимальная найденная, то заменим максимальную
                         if(longSequence.size > theLongestCarbonSequence.size){
                             theLongestCarbonSequence = longSequence
@@ -230,18 +228,6 @@ class PositionCalculator {
                     Log.i("test", "atom " + "${atom.position}")
                 }
             }
-
-            //Сохраним результат в виде 3d структуры
-            /*var result : Structure3D = Structure3D()
-            result.vertices = mutableListOf<Atom3D>()
-            for (atom in atoms3d){
-                result.vertices.add(atom)
-            }
-            for (atom : Atom3D in atoms3d){
-                result.vertices[structure.allAtoms.indexOf(atom)] = atom
-            }*/
-
-            return structure
         }
     }
 

@@ -36,7 +36,7 @@ class GraphStruct(startAtomType: AtomType = AtomType.Carbon) {
         }
     }
 
-    fun <T: StructuralAtom> getTyped(instruction: (StructuralAtom) -> T): List<T> {
+    fun <T: StructuralAtom> toTyped(instruction: (StructuralAtom) -> T): List<T> {
         return _allAtoms.map(instruction)
     }
 }
