@@ -22,7 +22,7 @@ class Mol2DStruct(startAtomType: AtomType = AtomType.Carbon) {
     fun remove(id: Int) {
         allAtoms.forEach {
             if (it.id == id) {
-                it.parent!!.removeChild(id)
+                it.structuralParent!!.removeChild(id)
             }
         }
     }

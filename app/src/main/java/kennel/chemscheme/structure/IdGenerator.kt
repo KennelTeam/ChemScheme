@@ -1,7 +1,7 @@
 package kennel.chemscheme.structure
 
 object IdGenerator {
-    var cur: Int = Int.MIN_VALUE
+    var cur: Int = 0
     fun genNewId(): Int {
         return ++cur
     }
