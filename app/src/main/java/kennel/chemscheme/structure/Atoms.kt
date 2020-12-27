@@ -35,6 +35,9 @@ class Sights2DAtom: BaseAtom {
             throw Exception("Bad parametrs of isChild and parent for creating atom with id $id")
         } else {
             this.parent = parent
+            if (isChild) {
+                _links.add(Atom2DLink(parent!!, -1))
+            }
         }
     }
 
@@ -43,9 +46,7 @@ class Sights2DAtom: BaseAtom {
             3 -> return setOf(3, 4, 5)
             in 0..2 -> {
                 val res = mutableSetOf<Int>()
-                val avai = if (isChild) setOf(1, 2)
-                        else setOf(0, 1, 2)
-                avai.forEach { av ->
+                setOf(0, 1, 2).forEach { av ->
                     var good = true
                     links.forEach { link -> if (av == link.connType) good = false }
                     if (good) res.add(av)
