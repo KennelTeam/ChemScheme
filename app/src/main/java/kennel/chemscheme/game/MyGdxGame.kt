@@ -40,7 +40,11 @@ fun max(a : Vector3, b : Vector3) : Vector3{
 }
 
 enum class VisualizationMode {
-    ZHELUD, CLASSIC
+    ZHELUD, CLASSIC;
+    /*private val vals: Array<VisualizationMode> = values()
+    fun next() : VisualizationMode? {
+        return vals[(ordinal + 1) % vals.size]
+    }*/
 }
 
 //МЫ ПИШЕМ ИСТОРИЮ!!!!!!!!!111
@@ -61,12 +65,34 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     private var curDeltaTime = 0f
     private val targetDelta = 0.02f
     private val MAX_NUMBER_OF_POINTS = 20
-    private val visualizationMode : VisualizationMode = VisualizationMode.CLASSIC
 
+    //Переменные, чтобы не пересекаться разным потокам при редактировании и чтении instances
+    private var isEditing = false
+    private var isRendering = false
+
+    //Режим отображения молекулы
+    private var visualizationMode : VisualizationMode = VisualizationMode.CLASSIC
+
+    companion object {
+        //Параметры каждого атома. Ключи - тип атома, значения:
+        //first - размер относительно углерода, second - цвет
+        val ATOM_PROPERTIES = hashMapOf<MolStruct.Elements, Pair<Float, Color>>(
+                MolStruct.Elements.C to Pair(1.0f, Color.BLACK),
+                MolStruct.Elements.H to Pair(0.5f, Color.WHITE),
+                MolStruct.Elements.I to Pair(1.6f, Color.PURPLE),
+                MolStruct.Elements.F to Pair(0.8f, Color.CYAN),
+                MolStruct.Elements.Br to Pair(1.2f, Color.BROWN),
+                MolStruct.Elements.Cl to Pair(1.0f, Color.GREEN),
+                MolStruct.Elements.O to Pair(1.0f, Color.CORAL)
+        )
+    }
+
+    //Полезные константы для визуализации
     private object constants {
-        val zheludScale = 1.5f
+        //Размер углерода в режиме желужя
+        val zheludScale = 1.4f
+        //Размер углерода в классическом режиме
         val classicScale = 0.7f
-        val hydrogenScale = 0.5f
     }
 
     override fun create() {
@@ -100,6 +126,35 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
 
     }
 
+    //Функция, которая 'начинает все с начала'. Обнуляет сцену и камеру
+    fun clear(){
+        //Если в это время выполняется рендеринг, то ждем его завершения
+        while (isRendering){
+            Thread.sleep(5)
+        }
+        //Обозначаем, что мы начали работу с instances
+        isEditing = true
+        instances.clear()
+        // Пересоздаем камеру
+        cam = PerspectiveCamera(67f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
+
+        cam.near = 1f
+        cam.far = 300f
+        cam.update()
+        camCtrl = CameraInputController(cam)
+        Gdx.input.inputProcessor = camCtrl
+        isEditing = false
+    }
+
+    //Смена режима отображения
+    fun changeMode(){
+        visualizationMode = when(visualizationMode){
+            VisualizationMode.ZHELUD -> VisualizationMode.CLASSIC
+            VisualizationMode.CLASSIC -> VisualizationMode.ZHELUD
+        }
+    }
+
+    //Рисование одного атома
     private fun addAtomToGraph() {
         // Создаем modelInstance и задаем положение ы пространстве
         val arg = argsQueue.removeAt(0) as Atom3D
@@ -110,35 +165,22 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
             VisualizationMode.ZHELUD -> inst.transform.scale(constants.zheludScale, constants.zheludScale, constants.zheludScale)
             VisualizationMode.CLASSIC -> inst.transform.scale(constants.classicScale, constants.classicScale, constants.classicScale)
         }
-
-        if (arg.type == AtomType.Hydrogen){
-            inst.transform.scale(constants.hydrogenScale, constants.hydrogenScale, constants.hydrogenScale)
-        }
-
-
         instances.add(inst)
     }
 
-    private fun genCylinder(){
-        /*val builder = ModelBuilder()
-        var c = builder.createCylinder(2f, 2f, 2f, 20,
-            Material(ColorAttribute.createDiffuse(Color.RED)), (Usage.Position or Usage.Normal).toLong())
-        val cInstance = ModelInstance(c)
-        instances.add(cInstance)*/
-    }
-
-    private fun turnCamera(struct : MolStruct){
+    //Поворот камеры при создании структуры
+    private fun turnCamera(struct : Structure3D){
+        //Находим параллелепипед, в который можно вписать молекулу
         var minPos : Vector3 = Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE).power(2f)
         var maxPos : Vector3 = Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE).power(2f)
 
-        //var middle = Vector3.Zero
-
-        struct.allAtoms.forEach {
+        struct.vertices.forEach {
             //middle = middle + it.position.toGdx3vec().power(2f)
             minPos = min(minPos, (it as Atom3D).position.toGdx3vec())
             maxPos = max(maxPos, (it as Atom3D).position.toGdx3vec())
         }
 
+        //Находим подходящее расстояние от центра молекулы
         var size = 2f * max(maxPos.x - minPos.x, maxPos.y - minPos.y) / 2
         var alpha = 33.5f * Math.PI / 180
         var distance = size * cos(alpha) / sin(alpha)
@@ -147,20 +189,22 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
         Log.i("test", "$maxPos")
         Log.i("test", "$minPos")
 
+        //Центром молекулы считаем центр того параллелепипеда
         val center = (minPos + maxPos) / 2f
 
-        //middle = (middle / (struct.vertices.size.toFloat())).power(0.5f)
-
+        //Переназначаем все параметры камеры и контроллера
+        camCtrl.reset()
         cam.lookAt(center)
         camCtrl.target = center
         cam.update()
-        //Log.i("test", "middle " + "$middle")
-        //Log.i("test", "$center")
     }
 
     // Тута создаются все модельки, чтение данных из Structure3D (шок, не правда ли)
-    fun createFromArray(data: MolStruct) {
-        Log.i("test", "createFromArray")
+    fun createFromArray(data: Structure3D) {
+        while (isRendering){
+            Thread.sleep(5)
+        }
+        isEditing = true
         turnCamera(data)
         data.allAtoms.forEach {
             argsQueue.add(it as Atom3D)
@@ -173,17 +217,12 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
             funQueue.add {
                 // Берем параметры из очереди аргументов
                 val gotten = argsQueue.removeAt(0) as List<Atom3D>
-
-                var direction = gotten[0].position - gotten[1].position
-                var perpendicular = (direction * Vector(0.0, 1.0, 0.0)) * direction
-
-                //var perpendicular = Vector(-direction.y, direction.x, direction.z) * direction
+                val direction = gotten[0].position - gotten[1].position
                 val builder = ModelBuilder()
-                var c = builder.createCylinder(0.1f, direction.magnitude().toFloat(), 0.1f, 20,
+                val c = builder.createCylinder(0.1f, direction.magnitude().toFloat(), 0.1f, 20,
                     Material(ColorAttribute.createDiffuse(Color.GRAY)), (Usage.Position or Usage.Normal).toLong())
                 val cInstance = ModelInstance(c)
-                //cInstance.transform.setToLookAt((Vector(1.0, 0.0, 0.0)).toGdx3vec(), direction.toGdx3vec())
-                cInstance.transform.setToRotation(direction.toGdx3vec(), Vector3.Y);
+                cInstance.transform.setToRotation((direction * Vector(0.0, 1.0, 0.0)).toGdx3vec(), -acos(direction.y / direction.magnitude()).toFloat() * 180f / Math.PI.toFloat())
                 cInstance.transform.set(((gotten[0].position + gotten[1].position) / 2.0).toGdx3vec(),
                     cInstance.transform.getRotation(Quaternion()))
 
@@ -204,6 +243,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
                 instances.add(lineInstance)*/
             }
         }
+        isEditing = false
     }
 
     // Здеся попытка перемещения камеры при ведении двумя пальцами,
@@ -259,20 +299,13 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
     // поэтому есть переменные funQueue и funArgs, куда добавляются функции, которые потом исполняются
     // во время рендера
     override fun render() {
-        genCylinder()
-        //curDeltaTime += Gdx.graphics.deltaTime
-
-        /*if (curDeltaTime >= targetDelta) {
-            procFingersTouches()
-            curDeltaTime -= targetDelta
-        }*/
-
+        if(isEditing){
+            return
+        }
+        isRendering = true
         funQueue.forEach { it.invoke() }
         funQueue.clear()
         argsQueue.clear()
-
-        //lastCamPos = cam.position.toKennelVec()
-
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.width, Gdx.graphics.height)
         Gdx.gl.glClearColor(1f, 1f, 1f, 1f)
@@ -282,6 +315,7 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
         instances.forEach { batch.render(it, env) }
         camCtrl.update()
         batch.end()
+        isRendering = false
     }
 
     override fun dispose() {
@@ -300,39 +334,15 @@ class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
             defModel = builder.createSphere(1f, 1f, 1f, 50, 50,
                     Material(ColorAttribute.createDiffuse(Color.GREEN)),
                     (Usage.Position or Usage.Normal).toLong())
+            atomsModels = mutableListOf()
 
-            atomsModels = listOf(
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.BLUE)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            AtomType.Carbon),
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.RED)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            AtomType.Chlorum),
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.BROWN)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            AtomType.Bromium),
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.CORAL)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            AtomType.Hydrogen),
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.CYAN)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            AtomType.Fluorine),
-                    AtomModel(
-                            builder.createSphere(1f, 1f, 1f, 50, 50,
-                                    Material(ColorAttribute.createDiffuse(Color.GOLD)),
-                                    (Usage.Position or Usage.Normal).toLong()),
-                            AtomType.Iodine)
-            )
+            ATOM_PROPERTIES.forEach{
+                val am = AtomModel(builder.createSphere(it.value.first, it.value.first, it.value.first, 50, 50,
+                        Material(ColorAttribute.createDiffuse(it.value.second)),
+                        (Usage.Position or Usage.Normal).toLong()),
+                        it.key)
+                atomsModels += am
+            }
         }
 
         fun getModelForId(requestedId: AtomType): Model {

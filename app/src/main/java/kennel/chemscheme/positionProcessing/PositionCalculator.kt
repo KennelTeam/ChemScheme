@@ -104,11 +104,13 @@ class PositionCalculator {
             var current = sequence[0].position
             //Идем по всем остальным атомам
             for (index : Int in 1..sequence.size-1){
+                val coefficient = 1f//MyGdxGame.ATOM_PROPERTIES[sequence[index].atom.name]!!.first + MyGdxGame.ATOM_PROPERTIES[sequence[index-1].atom.name]!!.first
+
                 //Зигзаг идет либо вниз либо вверх
                 if(index % 2 == 0){
-                    current += right
+                    current += right * coefficient.toDouble()
                 } else {
-                    current += left
+                    current += left * coefficient.toDouble()
                 }
                 //И назначаем полученную позицию нашему атому
                 sequence[index].position = current

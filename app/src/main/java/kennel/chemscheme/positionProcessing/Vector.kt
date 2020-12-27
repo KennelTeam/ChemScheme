@@ -45,6 +45,10 @@ class Vector (var x : Double, var y : Double, var z : Double) {
         return Vector(y*b.z - z*b.y, z*b.x - x*b.z, x*b.y - y*b.x)
     }
 
+    operator fun rem(b : Vector) : Double {
+        return x*b.x + y*b.y + z*b.z
+    }
+
     override fun toString() : String{
         return "(" + x.toString() + ", " + y.toString() + ", " + z.toString() + ")"
     }
