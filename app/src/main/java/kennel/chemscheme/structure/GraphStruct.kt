@@ -1,30 +1,22 @@
 package kennel.chemscheme.structure
 
 class GraphStruct(startAtomType: AtomType = AtomType.Carbon) {
-    private val _allAtoms = mutableListOf<Sights2DAtom>()
-    val allAtoms: List<Sights2DAtom>
+    private val _allAtoms = mutableListOf<Sides2DAtom>()
+    val allAtoms: List<Sides2DAtom>
         get() = _allAtoms
 
    init {
-       _allAtoms.add(Sights2DAtom(IdGenerator.genNewId(), startAtomType, false))
+       _allAtoms.add(Sides2DAtom(IdGenerator.genNewId(), startAtomType, false))
    }
 
     fun add(
         type: AtomType,
-        parent: Sights2DAtom,
+        parent: Sides2DAtom,
         sight: Int
     ) {
-        val newAtom = Sights2DAtom(IdGenerator.genNewId(), type, parent = parent)
+        val newAtom = Sides2DAtom(IdGenerator.genNewId(), type, parent = parent)
         parent.addChild(newAtom, sight)
         _allAtoms.add(newAtom)
-    }
-
-    fun atom(
-        type: AtomType,
-        parent: Sights2DAtom,
-        sight: Int
-    ) {
-        add(type, parent, sight)
     }
 
     fun remove(id: Int) {
@@ -44,14 +36,14 @@ class GraphStruct(startAtomType: AtomType = AtomType.Carbon) {
         }
     }
 
-    fun <T: StructuralAtom> toTyped(instruction: (StructuralAtom) -> T): List<T> {
-        return _allAtoms.map{ it as StructuralAtom }.map(instruction)
+    fun <T: StructuralAtom> toTyped(instructions: (atoms: List<Sides2DAtom>) -> List<T>): List<T> {
+        return instructions(allAtoms)
     }
 
 }
 
-fun dslGraph(f: GraphStruct.() -> Unit): GraphStruct {
+fun dslGraph(lambda: GraphStruct.() -> Unit): GraphStruct {
     val res = GraphStruct()
-    res.f()
+    res.lambda()
     return res
 }

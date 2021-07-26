@@ -2,6 +2,12 @@
     <string name="app_name">ChemScheme</string>
     <string name="nav_header_title">Chemical Schemes</string>
     <string name="nav_header_desc">Description</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="Modes">
+        <item>Skeleton</item>
+        <item>Structural</item>
+        <item>Fisher\'s</item>
+        <item>3D view</item>
+    </string-array>
 </resources>

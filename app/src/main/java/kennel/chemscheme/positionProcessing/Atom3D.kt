@@ -7,7 +7,7 @@ import kennel.chemscheme.structure.StructuralAtom
 /*
 Класс, который хранит в себе обычный Atom, но еще и позицию
  */
-class Atom3D(base : StructuralAtom) : StructuralAtom(base.id, base.type, base.isChild, base.structuralParent, base.conns) {
+class Atom3D(base : StructuralAtom) : StructuralAtom(base.id, base.type, base.isChild, base.structuralParent) {
     //3d вектор позиции
     var position : Vector = Vector(0.0, 0.0, 0.0)
     //индексы связей (atom.links), которые "ближе" и "дальше" - чтобы отмечать на схеме с треугольниками

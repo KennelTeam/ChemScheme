@@ -1,20 +1,20 @@
 package kennel.chemscheme.structure
 
-class Atom2DLink(val atom: Sights2DAtom, val connType: Int)
+data class Atom2DLink(val atom: Sides2DAtom, val connType: Int)
 
-class Sights2DAtom : StructuralAtom {
+class Sides2DAtom : StructuralAtom {
     private val _links: MutableList<Atom2DLink>
     val links: List<Atom2DLink>
         get() = _links
 
-    val availableSights: Set<Int>
-        get() = countAvailableSights()
+    val availableSides: Set<Int>
+        get() = countAvailableSides()
 
     constructor(
         id: Int,
         type: AtomType,
         isChild: Boolean = true,
-        parent: Sights2DAtom? = null,
+        parent: Sides2DAtom? = null,
         links: List<Atom2DLink> = listOf()
     ) : super(id, type, isChild, parent, links.map { it.atom }.toSet()) {
 
@@ -24,7 +24,7 @@ class Sights2DAtom : StructuralAtom {
         }
     }
 
-    fun countAvailableSights(): Set<Int> {
+    fun countAvailableSides(): Set<Int> {
         return if (type == AtomType.Carbon) {
             when (links.size) {
                 3 -> setOf(3, 4, 5)
@@ -44,12 +44,12 @@ class Sights2DAtom : StructuralAtom {
         }
     }
 
-    fun addChild(child: Sights2DAtom, sight: Int) {
+    fun addChild(child: Sides2DAtom, side: Int) {
         super.addChild(child)
-        if (sight in availableSights) {
-            _links.add(Atom2DLink(child, sight))
+        if (side in availableSides) {
+            _links.add(Atom2DLink(child, side))
         } else {
-            throw Exception("Sight $sight of atom with id $id is already occupied")
+            throw Exception("Side $side of atom with id $id is already occupied")
         }
     }
 
@@ -70,5 +70,5 @@ class Sights2DAtom : StructuralAtom {
         return null
     }
 
-    fun BaseAtom.toSightsAtom() = Sights2DAtom(id, type, links = links)
+    fun BaseAtom.toSidesAtom() = Sides2DAtom(id, type, links = links)
 }

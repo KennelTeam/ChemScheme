@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/starterScreen">
+    <fragment
+        android:id="@+id/mol3dFragment"
+        android:name="kennel.chemscheme.screens.view_3d.Mol3dFragment"
+        android:label="Mol3dFragment"
+        tools:layout="@layout/mol_3d_fragment" />
+    <fragment
+        android:id="@+id/molSkeletonFragment"
+        android:name="kennel.chemscheme.screens.view_skeleton.MolSkeletonFragment"
+        android:label="MolSkeletonFragment"
+        tools:layout="@layout/mol_skeleton_fragment" >
+        <action
+            android:id="@+id/action_molSkeletonFragment_to_molStructuralFragment2"
+            app:destination="@id/molStructuralFragment" />
+        <action
+            android:id="@+id/action_molSkeletonFragment_to_molFisherFragment2"
+            app:destination="@id/molFisherFragment" />
+        <action
+            android:id="@+id/action_molSkeletonFragment_to_mol3dFragment2"
+            app:destination="@id/mol3dFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/molFisherFragment"
+        android:name="kennel.chemscheme.screens.view_fisher.MolFisherFragment"
+        android:label="MolFisherFragment"
+        tools:layout="@layout/mol_fisher_fragment" />
+    <fragment
+        android:id="@+id/molStructuralFragment"
+        android:name="kennel.chemscheme.screens.view_structural.MolStructuralFragment"
+        android:label="MolStructuralFragment"
+        tools:layout="@layout/mol_structural_fragment" />
+    <fragment
+        android:id="@+id/mainScreen"
+        android:name="kennel.chemscheme.screens.main.MainScreen"
+        android:label="MainScreen"
+        tools:layout="@layout/main_screen"/>
+    <fragment
+        android:id="@+id/starterScreen"
+        android:name="kennel.chemscheme.screens.starter.StarterScreen"
+        android:label="StarterScreen"
+        tools:layout="@layout/starter_screen">
+        <action
+            android:id="@+id/action_starterScreen_to_mainScreen"
+            app:destination="@id/mainScreen" />
+    </fragment>
+</navigation>

@@ -21,5 +21,19 @@ class TestAvailableSights {
         struct.add(AtomType.Carbon, struct.allAtoms[0], sightParent =  ConnSight.NorthWest, sightNewAtom = ConnSight.NorthEast)
         val satom = SightsAtom(struct.allAtoms[1])
         assertEquals(setOf(ConnSight.NorthWest, ConnSight.South), satom.availableSights.toSet())
+
+        open class Pes {
+            protected fun example() {
+                println("Ti pes")
+            }
+        }
+
+        class Nikita: Pes() {
+
+        }
+
+        class AZh: Pes() {
+
+        }
     }
 }

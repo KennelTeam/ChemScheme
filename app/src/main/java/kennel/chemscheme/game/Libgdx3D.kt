@@ -16,7 +16,6 @@ import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
 import kennel.chemscheme.positionProcessing.Atom3D
 import kennel.chemscheme.positionProcessing.Vector
-import kennel.chemscheme.structural_formula.Atom
 import kennel.chemscheme.structure.AtomType
 import kotlin.math.*
 
@@ -47,7 +46,7 @@ enum class VisualizationMode {
 }
 
 //МЫ ПИШЕМ ИСТОРИЮ!!!!!!!!!111
-class MyGdxGame(val onCreate : (() -> Unit)) : ApplicationAdapter() {
+class Libgdx3D(val onCreate : (() -> Unit)) : ApplicationAdapter() {
 
     //Ну все, отдаю вам все свои должные!
     private lateinit var cam: PerspectiveCamera
